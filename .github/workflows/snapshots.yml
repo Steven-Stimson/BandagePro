@@ -38,7 +38,7 @@ jobs:
           version: ${{env.QT_VERSION}}
 
       - name: '⚙️ Install dependencies'
-        run: sudo apt-get install -y appstream
+        run: sudo apt-get install -y appstream libxcb-cursor0
 
       - name: '⚙️ Configure CMake'
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=/usr -G Ninja
