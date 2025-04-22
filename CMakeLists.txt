@@ -135,7 +135,8 @@ if (APPLE)
   set_target_properties(BandageNG PROPERTIES
         MACOSX_BUNDLE ON
         MACOSX_BUNDLE_BUNDLE_NAME "BandageNG"
-        MACOSX_BUNDLE_BUNDLE_IDENTIFIER "org.bandage-ng.app"
+        MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "org.bandage-ng.app"
         MACOSX_BUNDLE_ICON_FILE "application.icns")
   set_source_files_properties(images/application.icns PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources")
