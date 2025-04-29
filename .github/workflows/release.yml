@@ -12,11 +12,11 @@ on:
 # Cancel any preceding run on the pull request.
 concurrency:
   group: release-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/dev' }}
 
 jobs:
   build:
-    if: ${{ github.repository == 'asl/Bandage-NG' }}
+    if: ${{ github.repository == 'asl/BandageNG' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
