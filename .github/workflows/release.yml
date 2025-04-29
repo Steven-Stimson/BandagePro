@@ -45,7 +45,6 @@ jobs:
 
       - name: Release
         if: steps.check_tag.outputs.tag_exists == 'false'
-        uses: actions/checkout@v4
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
