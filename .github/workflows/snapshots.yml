@@ -167,6 +167,8 @@ jobs:
         - build-mac
         - build-windows
       runs-on: ubuntu-24.04
+      permissions:
+        contents: write # For release uploads
       steps:
       - name: '⚙️ Install dependencies'
         run: sudo apt-get install -y libfuse2
