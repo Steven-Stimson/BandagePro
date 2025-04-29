@@ -45,14 +45,11 @@ jobs:
 
       - name: Release
         if: steps.check_tag.outputs.tag_exists == 'false'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ env.TAG }}',
-              sha: context.sha
-            })
+        uses: actions/checkout@v4
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "${{ env.TAG }}" -m "Release v${{ env.VERSION }}"
+          git push origin "${{ env.TAG }}"
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
