@@ -22,11 +22,10 @@ jobs:
         id: version
         with:
           scheme: calver
-          
-      - name: Update versio
+
+      - name: Update version
         run: echo "${{ steps.version.outputs.version }}" > VERSION.txt
 
-          
       - name: Get changelog
         id: changelog
         run: |
@@ -84,7 +83,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          base: main
+          base: dev
           add-paths: VERSION.txt
           reviewers: asl
           commit-message: ${{ steps.message.outputs.content }}
