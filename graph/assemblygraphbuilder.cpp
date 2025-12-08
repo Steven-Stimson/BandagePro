@@ -1457,7 +1457,7 @@ namespace io {
             bool sequencesAreMissing = false;
 
             std::unique_ptr<FILE, decltype(&fclose)>
-                    fin(fopen(fileName_.toStdString().c_str(), "r"), fclose);
+                    fin(fopen(fileName_.toStdString().c_str(), "rb"), fclose);
             if (!fin)
                 return llvm::createStringError("failed to open file: " + fileName_.toStdString());
 
