@@ -5,9 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg Test Concurrent Network)
@@ -108,7 +105,6 @@ set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${PROJECT_
 
 message(STATUS "Building Bandage-NG version ${PROJECT_VERSION}")
 add_compile_definitions(APP_VERSION="${PROJECT_VERSION}")
-include_directories(ui)
 
 add_subdirectory(thirdparty)
 include_directories(thirdparty)
@@ -131,6 +127,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(zstd)
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 add_library(BandageLayout STATIC layout/graphlayoutworker.cpp layout/io.cpp layout/graphlayout.cpp)
 target_link_libraries(BandageLayout PRIVATE OGDF Qt6::Concurrent Qt6::Gui Qt6::Widgets)
 
@@ -144,6 +144,7 @@ add_library(BandageIo STATIC
 target_link_libraries(BandageIo PRIVATE Qt6::Gui Qt6::Widgets Qt6::Network foonathan::lexy)
 
 # FIXME: Untagle this
+include_directories(ui)
 add_library(BandageLib STATIC ${LIB_SOURCES} ${FORMS} graphsearch/graphsearchers.cpp)
 target_link_libraries(BandageLib PRIVATE BandageLayout BandageIo llvmSupport Qt6::Concurrent Qt6::Widgets Qt6::Svg Qt6::Network ${bandage_zlib})
 target_include_directories(BandageLib INTERFACE ".")
