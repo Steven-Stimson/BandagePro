@@ -1468,7 +1468,7 @@ namespace io {
                     seq(kseq_init(&fp), kseq_destroy);
             int l = - 1;
             while ((l = kseq_read(seq.get())) >= 0) {
-                if (auto E = handleEntry(seq->name, seq->name, seq->comment, graph))
+                if (auto E = handleEntry(seq->name, seq->seq, seq->comment, graph))
                     return E;
             }
 
@@ -1499,7 +1499,7 @@ namespace io {
                     seq(kseq_init(fp.get()), kseq_destroy);
             int l = - 1;
             while ((l = kseq_read(seq.get())) >= 0) {
-                if (auto E = handleEntry(seq->name, seq->name, seq->comment, graph))
+                if (auto E = handleEntry(seq->name, seq->seq, seq->comment, graph))
                     return E;
             }
 

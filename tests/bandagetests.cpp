@@ -177,8 +177,8 @@ void BandageTests::loadLogan()
     // Check the length of a couple nodes.
     DeBruijnNode * node1 = g_assemblyGraph->m_deBruijnGraphNodes["1+"];
     DeBruijnNode * node28 = g_assemblyGraph->m_deBruijnGraphNodes["28-"];
-    QCOMPARE(node1->getLength(), 11);
-    QCOMPARE(node28->getLength(), 12);
+    QCOMPARE(node1->getLength(), 60);
+    QCOMPARE(node28->getLength(), 60);
 }
 
 void BandageTests::loadGFAWithPlaceholders()
