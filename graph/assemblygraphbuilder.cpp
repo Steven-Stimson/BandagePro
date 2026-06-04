@@ -122,7 +122,7 @@ static ssize_t gzgetdelim(char **buf, size_t *bufsiz, int delimiter, gzFile fp) 
     }
 
     for (ptr = *buf, eptr = *buf + *bufsiz;;) {
-        char c = gzgetc(fp);
+        signed char c = gzgetc(fp);
         if (c == -1) {
             if (gzeof(fp)) {
                 ssize_t diff = (ssize_t) (ptr - *buf);
