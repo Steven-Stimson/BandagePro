@@ -109,7 +109,12 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     m_scene = new MyGraphicsScene(this);
     g_graphicsView->setScene(m_scene);
 
+    m_suppressAutoDraw = false;
     m_undoStack = new QUndoStack(this);
+    connect(m_undoStack, &QUndoStack::indexChanged, this, [this](int) {
+        if (!m_suppressAutoDraw && (m_uiState == GRAPH_DRAWN || m_uiState == GRAPH_LOADED))
+            drawGraph();
+    });
 
     setInfoTexts();
 
@@ -183,6 +188,9 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     connect(ui->nodeWidthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(nodeWidthChanged()));
     connect(g_graphicsView, SIGNAL(copySelectedSequencesToClipboard()), this, SLOT(copySelectedSequencesToClipboard()));
     connect(g_graphicsView, SIGNAL(saveSelectedSequencesToFile()), this, SLOT(saveSelectedSequencesToFile()));
+
+    g_graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(g_graphicsView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
     connect(ui->actionSave_entire_graph_to_FASTA, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToFasta()));
     connect(ui->actionSave_entire_graph_to_FASTA_only_positive_nodes, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToFastaOnlyPositiveNodes()));
     connect(ui->actionSave_entire_graph_to_GFA, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToGfa()));
@@ -1349,12 +1357,11 @@ void MainWindow::setNodeCustomColour()
     QColor newColour = QColorDialog::getColor(selectedNodes[0]->getCustomColourForDisplay(), this, dialogTitle);
     if (newColour.isValid())
     {
-        //If we are in single mode, apply the custom colour to both nodes in
-        //each complementary pair.
         if (!g_settings->doubleMode)
             selectedNodes = addComplementaryNodes(selectedNodes);
 
-        //If the colouring scheme is not currently custom, change it to custom now
+        QByteArray before = g_assemblyGraph->getGraphGfaString();
+
         if (g_settings->nodeColourScheme != CUSTOM_COLOURS)
             setNodeColourSchemeComboBox(CUSTOM_COLOURS);
 
@@ -1363,9 +1370,11 @@ void MainWindow::setNodeCustomColour()
             selectedNodes[i]->setCustomColour(newColour);
             if (selectedNodes[i]->getGraphicsItemNode() != 0)
                 selectedNodes[i]->getGraphicsItemNode()->setNodeColour();
-
         }
         g_graphicsView->viewport()->update();
+
+        QByteArray after = g_assemblyGraph->getGraphGfaString();
+        m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
     }
 }
 
@@ -1383,14 +1392,16 @@ void MainWindow::setNodeCustomLabel()
     bool ok;
     QString newLabel = QInputDialog::getText(this, "Custom label", dialogMessage, QLineEdit::Normal,
                                              selectedNodes[0]->getCustomLabel(), &ok);
-
     if (ok)
     {
-        //If the custom label option isn't currently on, turn it on now.
-        ui->nodeCustomLabelsCheckBox->setChecked(true);
+        QByteArray before = g_assemblyGraph->getGraphGfaString();
 
+        ui->nodeCustomLabelsCheckBox->setChecked(true);
         for (size_t i = 0; i < selectedNodes.size(); ++i)
             selectedNodes[i]->setCustomLabel(newLabel);
+
+        QByteArray after = g_assemblyGraph->getGraphGfaString();
+        m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
     }
 }
 
@@ -2350,30 +2361,39 @@ QByteArray MainWindow::makeStringUrlSafe(QByteArray s)
 void MainWindow::hideNodes()
 {
     std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
+
+    if (selectedNodes.empty())
+        return;
+
+    QByteArray before = g_assemblyGraph->getGraphGfaString();
     g_assemblyGraph->removeGraphicsItemNodes(&selectedNodes, !g_settings->doubleMode, m_scene);
+    QByteArray after = g_assemblyGraph->getGraphGfaString();
+
+    m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
 }
 
 
 //This function removes selected nodes/edges from the graph.
 void MainWindow::removeSelection()
 {
-    std::vector<DeBruijnEdge *> selectedEdges = m_scene->getSelectedEdges();
     std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
 
     if (selectedNodes.empty())
         return;
 
-    DeleteNodesCommand * command = new DeleteNodesCommand(g_assemblyGraph.data(), selectedNodes, m_scene);
-    m_undoStack->push(command);
+    std::vector<DeBruijnEdge *> selectedEdges = m_scene->getSelectedEdges();
+    QByteArray before = g_assemblyGraph->getGraphGfaString();
 
     g_assemblyGraph->removeGraphicsItemEdges(&selectedEdges, true, m_scene);
     g_assemblyGraph->removeGraphicsItemNodes(&selectedNodes, true, m_scene);
+    g_assemblyGraph->deleteEdges(&selectedEdges);
+    g_assemblyGraph->deleteNodes(&selectedNodes);
+
+    QByteArray after = g_assemblyGraph->getGraphGfaString();
+    m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
-
-    //Now that the graph has changed, we have to reset BLAST and contiguity
-    //stuff, as they may no longer apply.
     cleanUpAllBlast();
     g_assemblyGraph->resetNodeContiguityStatus();
 }
@@ -2389,8 +2409,6 @@ void MainWindow::duplicateSelectedNodes()
         return;
     }
 
-    //Nodes are always duplicated in pairs (both positive and negative), so we
-    //want to compile a list of only positive nodes.
     QList<DeBruijnNode *> nodesToDuplicate;
     for (size_t i = 0; i < selectedNodes.size(); ++i)
     {
@@ -2401,14 +2419,14 @@ void MainWindow::duplicateSelectedNodes()
             nodesToDuplicate.push_back(node);
     }
 
+    QByteArray before = g_assemblyGraph->getGraphGfaString();
     for (int i = 0; i < nodesToDuplicate.size(); ++i)
         g_assemblyGraph->duplicateNodePair(nodesToDuplicate[i], m_scene);
+    QByteArray after = g_assemblyGraph->getGraphGfaString();
+    m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
-
-    //Now that the graph has changed, we have to reset BLAST and contiguity
-    //stuff, as they may no longer apply.
     cleanUpAllBlast();
     g_assemblyGraph->resetNodeContiguityStatus();
 }
@@ -2422,8 +2440,6 @@ void MainWindow::mergeSelectedNodes()
         return;
     }
 
-    //Nodes are always merged in pairs (both positive and negative), so we
-    //want to compile a list of only positive nodes.
     QList<DeBruijnNode *> nodesToMerge;
     for (size_t i = 0; i < selectedNodes.size(); ++i)
     {
@@ -2441,27 +2457,27 @@ void MainWindow::mergeSelectedNodes()
         return;
     }
 
-    MergeNodesCommand * command = new MergeNodesCommand(g_assemblyGraph.data(), nodesToMerge, m_scene, true);
-    m_undoStack->push(command);
+    QByteArray before = g_assemblyGraph->getGraphGfaString();
+    bool success = g_assemblyGraph->mergeNodes(nodesToMerge, m_scene, true);
 
-    if (!command->isValid())
+    if (!success)
     {
-        m_undoStack->undo();
         QMessageBox::information(this, "Nodes cannot be merged", "You can only merge nodes that are in a single, unbranching path with no extra edges.");
         return;
     }
 
+    QByteArray after = g_assemblyGraph->getGraphGfaString();
+    m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
+
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
-
-    //Now that the graph has changed, we have to reset BLAST and contiguity
-    //stuff, as they may no longer apply.
     cleanUpAllBlast();
     g_assemblyGraph->resetNodeContiguityStatus();
 }
 
 void MainWindow::mergeAllPossible()
 {
+    QByteArray before = g_assemblyGraph->getGraphGfaString();
     int merges;
     {
         MyProgressDialog progress(this, "Merging nodes", true, "Cancel merge", "Cancelling merge...",
@@ -2475,7 +2491,6 @@ void MainWindow::mergeAllPossible()
         connect(g_assemblyGraph.data(), SIGNAL(setMergeTotalCount(int)), &progress, SLOT(setMaxValue(int)));
         connect(g_assemblyGraph.data(), SIGNAL(setMergeCompletedCount(int)), &progress, SLOT(setValue(int)));
 
-
         g_graphicsView->viewport()->setUpdatesEnabled(false);
         merges = g_assemblyGraph->mergeAllPossible(m_scene, &progress);
         g_graphicsView->viewport()->setUpdatesEnabled(true);
@@ -2483,11 +2498,11 @@ void MainWindow::mergeAllPossible()
 
     if (merges > 0)
     {
+        QByteArray after = g_assemblyGraph->getGraphGfaString();
+        m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
+
         g_assemblyGraph->determineGraphInfo();
         displayGraphDetails();
-
-        //Now that the graph has changed, we have to reset BLAST and contiguity
-        //stuff, as they may no longer apply.
         cleanUpAllBlast();
         g_assemblyGraph->resetNodeContiguityStatus();
     }
@@ -2523,13 +2538,15 @@ void MainWindow::changeNodeName()
     QString oldName = selectedNode->getNameWithoutSign();
     ChangeNodeNameDialog changeNodeNameDialog(this, oldName);
 
-    if (changeNodeNameDialog.exec()) //The user clicked OK
+    if (changeNodeNameDialog.exec())
     {
         QString newName = changeNodeNameDialog.getNewName();
         if (newName != oldName)
         {
-            ChangeNodeNameCommand * command = new ChangeNodeNameCommand(g_assemblyGraph.data(), selectedNode, newName);
-            m_undoStack->push(command);
+            QByteArray before = g_assemblyGraph->getGraphGfaString();
+            g_assemblyGraph->changeNodeName(oldName, newName);
+            QByteArray after = g_assemblyGraph->getGraphGfaString();
+            m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
             selectionChanged();
             cleanUpAllBlast();
         }
@@ -2548,19 +2565,15 @@ void MainWindow::changeNodeDepth()
     double oldDepth = g_assemblyGraph->getMeanDepth(selectedNodes);
     ChangeNodeDepthDialog changeNodeDepthDialog(this, &selectedNodes, oldDepth);
 
-    if (changeNodeDepthDialog.exec()) //The user clicked OK
+    if (changeNodeDepthDialog.exec())
     {
         double newDepth = changeNodeDepthDialog.getNewDepth();
         if (newDepth != oldDepth)
         {
-            for (size_t i = 0; i < selectedNodes.size(); ++i)
-            {
-                ChangeNodeDepthCommand * command = new ChangeNodeDepthCommand(g_assemblyGraph.data(), selectedNodes[i], newDepth);
-                m_undoStack->push(command);
-            }
-            selectionChanged();
-            g_assemblyGraph->recalculateAllDepthsRelativeToDrawnMean();
-            g_assemblyGraph->recalculateAllNodeWidths();
+            QByteArray before = g_assemblyGraph->getGraphGfaString();
+            g_assemblyGraph->changeNodeDepth(&selectedNodes, newDepth);
+            QByteArray after = g_assemblyGraph->getGraphGfaString();
+            m_suppressAutoDraw = true; m_undoStack->push(new GraphStateCommand(g_assemblyGraph.data(), before, after)); m_suppressAutoDraw = false;
             g_graphicsView->viewport()->update();
         }
     }
@@ -2572,4 +2585,9 @@ void MainWindow::openGraphInfoDialog()
 {
     GraphInfoDialog graphInfoDialog(this);
     graphInfoDialog.exec();
+}
+
+void MainWindow::showContextMenu(QPoint pos)
+{
+    ui->menuManipulate->exec(g_graphicsView->mapToGlobal(pos));
 }

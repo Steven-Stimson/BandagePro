@@ -27,6 +27,8 @@
 #include "../graph/graphicsitemnode.h"
 #include <QFile>
 #include <QTextStream>
+#include <QBuffer>
+#include <QTemporaryFile>
 #include <QApplication>
 #include "../graph/graphicsitemedge.h"
 #include "../blast/blastsearch.h"
@@ -3315,6 +3317,61 @@ bool AssemblyGraph::saveEntireGraphToGfa(QString filename)
         out << edgesToSave[i]->getGfaLinkLine();
 
     return true;
+}
+
+QByteArray AssemblyGraph::getGraphGfaString() const
+{
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    QTextStream out(&buffer);
+
+    // Always use "DP" tag to ensure depth is preserved on restore
+    QString depthTag = m_depthTag.isEmpty() ? "DP" : m_depthTag;
+
+    QMapIterator<QString, DeBruijnNode*> i(m_deBruijnGraphNodes);
+    while (i.hasNext())
+    {
+        i.next();
+        DeBruijnNode * node = i.value();
+        if (node->isPositiveNode())
+            out << node->getGfaSegmentLine(depthTag);
+    }
+
+    QList<DeBruijnEdge*> edgesToSave;
+    QMapIterator<QPair<DeBruijnNode*, DeBruijnNode*>, DeBruijnEdge*> j(m_deBruijnGraphEdges);
+    while (j.hasNext())
+    {
+        j.next();
+        DeBruijnEdge * edge = j.value();
+        if (edge->isPositiveEdge())
+            edgesToSave.push_back(edge);
+    }
+    std::sort(edgesToSave.begin(), edgesToSave.end(), DeBruijnEdge::compareEdgePointers);
+    for (int k = 0; k < edgesToSave.size(); ++k)
+        out << edgesToSave[k]->getGfaLinkLine();
+
+    out.flush();
+    return data;
+}
+
+void AssemblyGraph::loadGraphFromGfaString(const QByteArray & gfaData)
+{
+    cleanUp();
+
+    QTemporaryFile tmpFile;
+    tmpFile.setFileTemplate(QDir::tempPath() + "/bandage_undo_XXXXXX.gfa");
+    if (!tmpFile.open())
+        return;
+
+    tmpFile.write(gfaData);
+    tmpFile.flush();
+
+    bool unsupportedCigar = false, customLabels = false, customColours = false;
+    QString bandageOptionsError;
+    buildDeBruijnGraphFromGfa(tmpFile.fileName(), &unsupportedCigar, &customLabels,
+                              &customColours, &bandageOptionsError);
+    determineGraphInfo();
 }
 
 bool AssemblyGraph::saveVisibleGraphToGfa(QString filename)

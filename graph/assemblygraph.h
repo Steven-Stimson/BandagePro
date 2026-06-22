@@ -154,6 +154,8 @@ public:
     void saveEntireGraphToFastaOnlyPositiveNodes(QString filename);
     bool saveEntireGraphToGfa(QString filename);
     bool saveVisibleGraphToGfa(QString filename);
+    QByteArray getGraphGfaString() const;
+    void loadGraphFromGfaString(const QByteArray & gfaData);
     void changeNodeName(QString oldName, QString newName);
     NodeNameStatus checkNodeNameValidity(QString nodeName);
     void changeNodeDepth(std::vector<DeBruijnNode *> * nodes,

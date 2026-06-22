@@ -53,6 +53,7 @@ private:
     Ui::MainWindow *ui;
     MyGraphicsScene * m_scene;
     QUndoStack * m_undoStack;
+    bool m_suppressAutoDraw;
 
     GraphicsViewZoom * m_graphicsViewZoom;
     double m_previousZoomSpinBoxValue;
@@ -162,6 +163,7 @@ private slots:
     void changeNodeName();
     void changeNodeDepth();
     void openGraphInfoDialog();
+    void showContextMenu(QPoint pos);
 
 protected:
       void showEvent(QShowEvent *ev);
