@@ -1,0 +1,54 @@
+name: Build Windows Only
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Qt
+      run: |
+        choco install qt5-default -y
+        echo "C:\Qt\5.15.2\msvc2019_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Build Bandage
+      shell: cmd
+      run: |
+        qmake Bandage.pro
+        nmake
+
+    - name: Package Windows build
+      shell: bash
+      run: |
+        mkdir -p Bandage-Windows
+        if [ -f release/Bandage.exe ]; then
+          cp release/Bandage.exe Bandage-Windows/
+        elif [ -f Bandage.exe ]; then
+          cp Bandage.exe Bandage-Windows/
+        fi
+        cp build_scripts/sample_LastGraph Bandage-Windows/ || true
+
+        # Copy Qt DLLs manually
+        QTDIR="C:/Qt/5.15.2/msvc2019_64"
+        if [ -d "$QTDIR" ]; then
+          cp "$QTDIR/bin/Qt5Core.dll" Bandage-Windows/ || true
+          cp "$QTDIR/bin/Qt5Gui.dll" Bandage-Windows/ || true
+          cp "$QTDIR/bin/Qt5Widgets.dll" Bandage-Windows/ || true
+          cp "$QTDIR/bin/Qt5Svg.dll" Bandage-Windows/ || true
+        fi
+
+        cd Bandage-Windows
+        7z a ../Bandage-Windows-x86_64.zip *
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Bandage-Windows
+        path: Bandage-Windows-x86_64.zip
