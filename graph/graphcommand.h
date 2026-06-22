@@ -24,6 +24,7 @@
 #include <QList>
 #include <QString>
 #include <QByteArray>
+#include <QColor>
 #include <vector>
 
 class AssemblyGraph;

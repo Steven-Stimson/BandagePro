@@ -201,8 +201,8 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     undoAction->setShortcuts(QKeySequence::Undo);
     QAction * redoAction = m_undoStack->createRedoAction(this, tr("&Redo"));
     redoAction->setShortcuts(QKeySequence::Redo);
-    ui->menuEdit->addAction(undoAction);
-    ui->menuEdit->addAction(redoAction);
+    ui->menuManipulate->addAction(undoAction);
+    ui->menuManipulate->addAction(redoAction);
 
     connect(this, SIGNAL(windowLoaded()), this, SLOT(afterMainWindowShow()), Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
 }
@@ -2363,7 +2363,7 @@ void MainWindow::removeSelection()
     if (selectedNodes.empty())
         return;
 
-    DeleteNodesCommand * command = new DeleteNodesCommand(g_assemblyGraph, selectedNodes, m_scene);
+    DeleteNodesCommand * command = new DeleteNodesCommand(g_assemblyGraph.data(), selectedNodes, m_scene);
     m_undoStack->push(command);
 
     g_assemblyGraph->removeGraphicsItemEdges(&selectedEdges, true, m_scene);
@@ -2441,7 +2441,7 @@ void MainWindow::mergeSelectedNodes()
         return;
     }
 
-    MergeNodesCommand * command = new MergeNodesCommand(g_assemblyGraph, nodesToMerge, m_scene, true);
+    MergeNodesCommand * command = new MergeNodesCommand(g_assemblyGraph.data(), nodesToMerge, m_scene, true);
     m_undoStack->push(command);
 
     if (!command->isValid())
@@ -2528,7 +2528,7 @@ void MainWindow::changeNodeName()
         QString newName = changeNodeNameDialog.getNewName();
         if (newName != oldName)
         {
-            ChangeNodeNameCommand * command = new ChangeNodeNameCommand(g_assemblyGraph, selectedNode, newName);
+            ChangeNodeNameCommand * command = new ChangeNodeNameCommand(g_assemblyGraph.data(), selectedNode, newName);
             m_undoStack->push(command);
             selectionChanged();
             cleanUpAllBlast();
@@ -2555,7 +2555,7 @@ void MainWindow::changeNodeDepth()
         {
             for (size_t i = 0; i < selectedNodes.size(); ++i)
             {
-                ChangeNodeDepthCommand * command = new ChangeNodeDepthCommand(g_assemblyGraph, selectedNodes[i], newDepth);
+                ChangeNodeDepthCommand * command = new ChangeNodeDepthCommand(g_assemblyGraph.data(), selectedNodes[i], newDepth);
                 m_undoStack->push(command);
             }
             selectionChanged();

@@ -52,10 +52,10 @@ DeleteNodesCommand::DeleteNodesCommand(AssemblyGraph * graph,
         snapshot.depth = node->getDepth();
         snapshot.sequence = node->getSequence();
         snapshot.rcNodeName = node->getReverseComplement()->getName();
-        snapshot.isDrawn = node->thisNodeIsDrawn();
+        snapshot.isDrawn = node->isDrawn();
         if (node->hasCustomColour())
             snapshot.colour = node->getCustomColour();
-        if (node->hasCustomLabel())
+        if (!node->getCustomLabel().isEmpty())
             snapshot.customLabel = node->getCustomLabel();
 
         m_deletedNodes.push_back(snapshot);
@@ -163,10 +163,10 @@ MergeNodesCommand::MergeNodesCommand(AssemblyGraph * graph,
         snapshot.depth = node->getDepth();
         snapshot.sequence = node->getSequence();
         snapshot.rcNodeName = node->getReverseComplement()->getName();
-        snapshot.isDrawn = node->thisNodeIsDrawn();
+        snapshot.isDrawn = node->isDrawn();
         if (node->hasCustomColour())
             snapshot.colour = node->getCustomColour();
-        if (node->hasCustomLabel())
+        if (!node->getCustomLabel().isEmpty())
             snapshot.customLabel = node->getCustomLabel();
 
         m_originalNodes.push_back(snapshot);
