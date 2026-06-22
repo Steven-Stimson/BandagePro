@@ -25,6 +25,8 @@ set(LIB_SOURCES
     graph/graphicsitemedge.cpp
     graph/graphicsitemlink.cpp
     graph/graphicsitemnode.cpp
+    graph/movenodescommand.cpp
+    graph/graphcommand.cpp
     graph/graphlocation.cpp
     graph/path.cpp
     program/globals.cpp

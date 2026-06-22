@@ -45,6 +45,8 @@
 #include "graph/path.h"
 #include "graph/sequenceutils.h"
 #include "graph/io.h"
+#include "graph/graphcommand.h"
+#include "graph/gfawriter.h"
 #include "graph/nodecolorers.h"
 #include "graph/gfawriter.h"
 #include "graph/fastawriter.h"
@@ -75,6 +77,8 @@
 #include <QStringListModel>
 #include <QtConcurrent>
 #include <QFutureWatcher>
+#include <QUndoStack>
+#include <QTemporaryFile>
 
 #include <iterator>
 #include <algorithm>
@@ -93,6 +97,7 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
 {
     ui->setupUi(this);
 
+    g_undoStack = new QUndoStack(this);
     QApplication::setWindowIcon(QIcon(QPixmap(":/icons/icon.png")));
     ui->graphicsViewWidget->layout()->addWidget(g_graphicsView);
 
@@ -114,6 +119,10 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
 
     m_scene = new BandageGraphicsScene(this);
     g_graphicsView->setScene(m_scene);
+
+    g_graphicsView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(g_graphicsView, &BandageGraphicsView::customContextMenuRequested,
+            this, &MainWindow::showContextMenu);
 
     //Nothing is selected yet, so this will hide the appropriate labels.
     selectionChanged();
@@ -213,6 +222,14 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     connect(ui->actionChange_node_depth, SIGNAL(triggered(bool)), this, SLOT(changeNodeDepth()));
     connect(ui->moreInfoButton, SIGNAL(clicked(bool)), this, SLOT(openGraphInfoDialog()));
 
+    QAction *undoAction = g_undoStack->createUndoAction(this, tr("&Undo"));
+    undoAction->setShortcuts(QKeySequence::Undo);
+    QAction *redoAction = g_undoStack->createRedoAction(this, tr("&Redo"));
+    redoAction->setShortcuts(QKeySequence::Redo);
+    ui->menuManipulate->insertAction(ui->actionHide_selected_nodes, redoAction);
+    ui->menuManipulate->insertAction(redoAction, undoAction);
+    ui->menuManipulate->insertSeparator(ui->actionHide_selected_nodes);
+
     connect(this, SIGNAL(windowLoaded()), this, SLOT(afterMainWindowShow()), Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
 }
 
@@ -283,6 +300,42 @@ void MainWindow::cleanUp() {
     g_settings->displayNodeCsvDataCol = 0;
 
     switchColourScheme(RANDOM_COLOURS);
+
+    if (g_undoStack)
+        g_undoStack->clear();
+}
+
+QByteArray MainWindow::captureGraphState() const
+{
+    QTemporaryFile file("bandage_undo_XXXXXX.gfa");
+    file.setAutoRemove(true);
+    if (!file.open())
+        return {};
+
+    QString fileName = file.fileName();
+    file.close();
+
+    if (!gfa::saveEntireGraph(fileName, *g_assemblyGraph))
+        return {};
+
+    QFile readFile(fileName);
+    if (!readFile.open(QIODevice::ReadOnly))
+        return {};
+
+    return readFile.readAll();
+}
+
+void MainWindow::pushGraphStateCommand(const QByteArray &before, const QByteArray &after)
+{
+    g_undoStack->push(new GraphStateCommand(before, after, [this]() { afterGraphStateChange(); }));
+}
+
+void MainWindow::afterGraphStateChange()
+{
+    cleanUpAllBlast();
+    resetNodeContiguityStatus();
+    resetAllNodeColours();
+    drawGraph();
 }
 
 void MainWindow::loadLogan(QString accession) {
@@ -1646,6 +1699,8 @@ void MainWindow::setNodeCustomColour() {
     if (!newColour.isValid())
         return;
 
+    QByteArray before = captureGraphState();
+
     // If we are in single mode, apply the custom colour to both nodes in
     // each complementary pair.
     if (!g_settings->doubleMode)
@@ -1660,6 +1715,8 @@ void MainWindow::setNodeCustomColour() {
         if (selectedNode->getGraphicsItemNode() != nullptr)
             selectedNode->getGraphicsItemNode()->setNodeColour(newColour);
     }
+
+    pushGraphStateCommand(before, captureGraphState());
 
     g_graphicsView->viewport()->update();
 }
@@ -1681,11 +1738,17 @@ void MainWindow::setNodeCustomLabel()
 
     if (ok)
     {
+        QByteArray before = captureGraphState();
+
         //If the custom label option isn't currently on, turn it on now.
         ui->nodeCustomLabelsCheckBox->setChecked(true);
 
         for (auto & selectedNode : selectedNodes)
             g_assemblyGraph->setCustomLabel(selectedNode, newLabel);
+
+        pushGraphStateCommand(before, captureGraphState());
+
+        g_graphicsView->viewport()->update();
     }
 }
 
@@ -2527,7 +2590,12 @@ QByteArray MainWindow::makeStringUrlSafe(QByteArray s)
 void MainWindow::hideNodes()
 {
     std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
+    if (selectedNodes.empty())
+        return;
+
+    QByteArray before = captureGraphState();
     m_scene->removeGraphicsItemNodes(selectedNodes, !g_settings->doubleMode);
+    pushGraphStateCommand(before, captureGraphState());
 }
 
 
@@ -2537,11 +2605,15 @@ void MainWindow::removeSelection()
     std::vector<DeBruijnEdge *> selectedEdges = m_scene->getSelectedEdges();
     std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
 
+    QByteArray before = captureGraphState();
+
     m_scene->removeGraphicsItemEdges(selectedEdges, true);
     m_scene->removeGraphicsItemNodes(selectedNodes, true);
 
     g_assemblyGraph->deleteEdges(selectedEdges);
     g_assemblyGraph->deleteNodes(selectedNodes);
+
+    pushGraphStateCommand(before, captureGraphState());
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
@@ -2576,8 +2648,12 @@ void MainWindow::duplicateSelectedNodes()
             nodesToDuplicate.push_back(node);
     }
 
+    QByteArray before = captureGraphState();
+
     for (auto & i : nodesToDuplicate)
         g_assemblyGraph->duplicateNodePair(i, m_scene);
+
+    pushGraphStateCommand(before, captureGraphState());
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
@@ -2612,10 +2688,14 @@ void MainWindow::mergeSelectedNodes() {
         return;
     }
 
+    QByteArray before = captureGraphState();
+
     if (!g_assemblyGraph->mergeNodes(nodesToMerge, m_scene)) {
         QMessageBox::information(this, "Nodes cannot be merged", "You can only merge nodes that are in a single, unbranching path with no extra edges.");
         return;
     }
+
+    pushGraphStateCommand(before, captureGraphState());
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
@@ -2629,6 +2709,8 @@ void MainWindow::mergeSelectedNodes() {
 
 void MainWindow::mergeAllPossible()
 {
+    QByteArray before = captureGraphState();
+
     int merges;
     {
         MyProgressDialog progress(this, "Merging nodes", true, "Cancel merge", "Cancelling merge...",
@@ -2650,6 +2732,8 @@ void MainWindow::mergeAllPossible()
 
     if (merges > 0)
     {
+        pushGraphStateCommand(before, captureGraphState());
+
         g_assemblyGraph->determineGraphInfo();
         displayGraphDetails();
 
@@ -2693,7 +2777,9 @@ void MainWindow::changeNodeName()
 
     if (changeNodeNameDialog.exec()) //The user clicked OK
     {
+        QByteArray before = captureGraphState();
         g_assemblyGraph->changeNodeName(oldName, changeNodeNameDialog.getNewName());
+        pushGraphStateCommand(before, captureGraphState());
         selectionChanged();
         cleanUpAllBlast();
     }
@@ -2714,8 +2800,10 @@ void MainWindow::changeNodeDepth()
     if (!changeNodeDepthDialog.exec())
         return;
 
+    QByteArray before = captureGraphState();
     g_assemblyGraph->changeNodeDepth(selectedNodes,
                                      changeNodeDepthDialog.getNewDepth());
+    pushGraphStateCommand(before, captureGraphState());
     selectionChanged();
     g_assemblyGraph->recalculateAllNodeWidths(ui->nodeWidthSpinBox->value(),
                                               g_settings->depthPower, g_settings->depthEffectOnWidth);
@@ -2773,4 +2861,9 @@ void MainWindow::showWalkListDialog() {
 
     WalkListDialog walkListDialog(*g_assemblyGraph, selectedNodes, this);
     walkListDialog.exec();
+}
+
+void MainWindow::showContextMenu(QPoint pos)
+{
+    ui->menuManipulate->exec(g_graphicsView->mapToGlobal(pos));
 }

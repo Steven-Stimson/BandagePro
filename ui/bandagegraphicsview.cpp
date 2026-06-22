@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <qmath.h>
 #include <cmath>
+#include <QUndoStack>
 
 BandageGraphicsView::BandageGraphicsView(QObject * /*parent*/) :
     QGraphicsView(), m_rotation(0.0)
@@ -42,11 +43,8 @@ void BandageGraphicsView::mousePressEvent(QMouseEvent * event)
 {
     if (event->modifiers() == Qt::CTRL)
         setDragMode(QGraphicsView::ScrollHandDrag);
-    else if (event->button() == Qt::RightButton)
-        g_settings->nodeDragging = ONE_PIECE;
 
     m_previousPos = event->pos();
-
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -131,6 +129,16 @@ void BandageGraphicsView::keyPressEvent(QKeyEvent * event)
     //Ctrl+S (Command+S on Mac) saves the selected sequences to a FASTA file.
     else if (event->key() == Qt::Key_S && (event->modifiers() & Qt::ControlModifier))
         emit saveSelectedSequencesToFile();
+
+    //Ctrl+Z: undo
+    else if (event->matches(QKeySequence::Undo)) {
+        if (g_undoStack) g_undoStack->undo();
+    }
+
+    //Ctrl+Y or Ctrl+Shift+Z: redo
+    else if (event->matches(QKeySequence::Redo)) {
+        if (g_undoStack) g_undoStack->redo();
+    }
 
     //Ctrl+plus (Command+plus on Mac) zooms the view in.  If shift is pressed
     //as well, then it rotates clockwise.

@@ -27,6 +27,7 @@ double g_absoluteZoom;
 QSharedPointer<search::BlastSearch> g_blastSearch;
 QSharedPointer<AssemblyGraph> g_assemblyGraph;
 std::shared_ptr<AnnotationsManager> g_annotationsManager;
+QUndoStack * g_undoStack = nullptr;
 
 
 QString formatIntForDisplay(int num) {

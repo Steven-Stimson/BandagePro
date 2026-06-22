@@ -1790,22 +1790,55 @@ then colour which other nodes in the graph are likely to be contiguous
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLabel" name="label_14">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Find nodes</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="hLayout_findNodes">
+          <item>
+           <widget class="InfoTextWidget" name="findNodesHeaderInfo" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Type a comma-delimited list of node names or numbers and click &apos;Find node(s)&apos; to search for and select nodes in the graph. Supports both exact and partial name matching.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="font">
+             <font>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Find nodes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="findNodesHeaderSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="Line" name="line_10">
@@ -1952,22 +1985,55 @@ then colour which other nodes in the graph are likely to be contiguous
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_114">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Find paths</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="hLayout_findPaths">
+          <item>
+           <widget class="InfoTextWidget" name="findPathsHeaderInfo" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search for a named path in the graph by name. Paths are ordered sequences of oriented nodes. Use &apos;Find path&apos; to select or recolor all nodes belonging to the matching path.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_114">
+            <property name="font">
+             <font>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Find paths</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="findPathsHeaderSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="Line" name="line_101">
@@ -2010,6 +2076,9 @@ then colour which other nodes in the graph are likely to be contiguous
                <width>16</width>
                <height>16</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;Select&lt;/b&gt; highlights the matching path's nodes in the graph view.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Recolor&lt;/b&gt; assigns a custom colour to the matching path's nodes (requires 'Custom colours' colouring mode).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2092,6 +2161,9 @@ then colour which other nodes in the graph are likely to be contiguous
                <height>16</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Type a path name and click &apos;Find path&apos; to locate a named path in the graph. Optionally specify a position to zoom to a particular location within the path.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="1">
@@ -2126,22 +2198,55 @@ then colour which other nodes in the graph are likely to be contiguous
         </item>
 
         <item>
-         <widget class="QLabel" name="label_115">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Find walks</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="hLayout_findWalks">
+          <item>
+           <widget class="InfoTextWidget" name="findWalksHeaderInfo" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search for a named walk in the graph by sequence name. Walks are paths through the graph defined in GFA W-lines. Use &apos;Find walk&apos; to select or recolor all nodes belonging to the matching walk.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_115">
+            <property name="font">
+             <font>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Find walks</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="findWalksHeaderSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="Line" name="line_102">
@@ -2185,6 +2290,9 @@ then colour which other nodes in the graph are likely to be contiguous
                <width>16</width>
                <height>16</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;Select&lt;/b&gt; highlights the matching walk's nodes in the graph view.&lt;br/&gt;&lt;br/&gt;&lt;b&gt;Recolor&lt;/b&gt; assigns a custom colour to the matching walk's nodes (requires 'Custom colours' colouring mode).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -2266,6 +2374,9 @@ then colour which other nodes in the graph are likely to be contiguous
                <width>16</width>
                <height>16</height>
               </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Type a walk sequence name and click &apos;Find walk&apos; to locate a named walk in the graph. Optionally specify a position to zoom to a particular location within the walk.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>

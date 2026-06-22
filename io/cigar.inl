@@ -108,11 +108,16 @@ namespace cigar::grammar {
 
             static constexpr auto rule =
                     dsl::period |
-                    dsl::integer<std::uint32_t> >> dsl::capture(cigaropcode);
+                    (dsl::peek(dsl::integer<std::uint32_t> + cigaropcode) >>
+                     dsl::integer<std::uint32_t> + dsl::capture(cigaropcode)) |
+                    dsl::integer<std::uint32_t>;
             static constexpr auto value = lexy::callback<cigar::cigarop>(
                     []() { return cigar::cigarop{0, 0}; },
                     [](std::uint32_t cnt, auto lexeme) {
                         return cigar::cigarop{cnt, lexeme[0]};
+                    },
+                    [](std::uint32_t cnt) {
+                        return cigar::cigarop{cnt, 'M'};
                     });
         };
 

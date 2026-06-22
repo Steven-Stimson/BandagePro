@@ -56,6 +56,7 @@ public:
     float m_width;
     size_t m_grabIndex : 31;
     bool m_hasArrow : 1;
+    adt::SmallPODVector<QPointF> m_startPoints;
 
     static QSize getNodeTextSize(const QString& text);
     static float getNodeWidth(double depthRelativeToMeanDrawnDepth,
@@ -66,6 +67,7 @@ public:
 
     void mousePressEvent(QGraphicsSceneMouseEvent * event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent * event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget *) override;
     QPainterPath shape() const override;
     void shiftPoints(QPointF difference);

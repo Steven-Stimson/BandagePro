@@ -105,6 +105,10 @@ private:
     void setPathSelectionWidgetVisibility(bool visible);
     void setWalkSelectionWidgetVisibility(bool visible);
 
+    QByteArray captureGraphState() const;
+    void pushGraphStateCommand(const QByteArray &before, const QByteArray &after);
+    void afterGraphStateChange();
+
     static QByteArray makeStringUrlSafe(QByteArray s);
     std::vector<DeBruijnNode *> addComplementaryNodes(std::vector<DeBruijnNode *> nodes);
     void resetNodeContiguityStatus();
@@ -185,6 +189,7 @@ private slots:
     void changeNodeDepth();
     void openGraphInfoDialog();
     void exportGraphLayout();
+    void showContextMenu(QPoint pos);
 
 protected:
       void showEvent(QShowEvent *ev) override;

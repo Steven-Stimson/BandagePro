@@ -136,8 +136,12 @@ static void chooseQtPlatform(const CLI::App &app, const SubCmd &cmd) {
     // Only use minimal platform on Linux. Both Windows and MacOS X always have
     // full platform available (as there is no real headless mode)
 #ifdef Q_OS_LINUX
-    if (!guiNeeded && qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM"))
-        qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
+    if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
+        if (guiNeeded)
+            qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("xcb"));
+        else
+            qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("minimal"));
+    }
 #endif
 }
 
@@ -172,7 +176,7 @@ int main(int argc, char *argv[]) {
     if (g_memory->terminalWidth > 300) g_memory->terminalWidth = 300;
 #endif //Q_OS_WIN32
 
-    app->setApplicationName("Bandage-NG");
+    app->setApplicationName("Bandage++");
     app->setApplicationVersion(APP_VERSION);
 
     return std::visit([&](const auto &command) {

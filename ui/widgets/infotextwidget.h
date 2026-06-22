@@ -30,6 +30,7 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override;
     void mousePressEvent(QMouseEvent * event) override;
+    void enterEvent(QEnterEvent *event) override;
     bool event(QEvent *event) override;
 };
 

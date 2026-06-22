@@ -75,3 +75,7 @@ void InfoTextWidget::paintEvent(QPaintEvent * /*event*/) {
 void InfoTextWidget::mousePressEvent(QMouseEvent * event) {
     QToolTip::showText(event->globalPosition().toPoint(), toolTip());
 }
+
+void InfoTextWidget::enterEvent(QEnterEvent * /*event*/) {
+    QToolTip::showText(mapToGlobal(QPoint(width() / 2, height())), toolTip());
+}

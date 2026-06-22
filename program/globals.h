@@ -29,6 +29,7 @@ class Memory;
 class BandageGraphicsView;
 class AssemblyGraph;
 class AnnotationsManager;
+class QUndoStack;
 
 namespace search {
 class BlastSearch;
@@ -44,6 +45,7 @@ extern double g_absoluteZoom;
 extern QSharedPointer<search::BlastSearch> g_blastSearch;
 extern QSharedPointer<AssemblyGraph> g_assemblyGraph;
 extern std::shared_ptr<AnnotationsManager> g_annotationsManager;
+extern QUndoStack * g_undoStack;
 
 
 //Functions for formatting numbers are used in many places, and are made global.

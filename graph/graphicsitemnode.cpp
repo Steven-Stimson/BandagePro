@@ -18,6 +18,7 @@
 
 #include "graphicsitemnode.h"
 #include "graphicsitemedge.h"
+#include "movenodescommand.h"
 #include "debruijnnode.h"
 #include "debruijnedge.h"
 #include "assemblygraph.h"
@@ -391,6 +392,7 @@ void GraphicsItemNode::mousePressEvent(QGraphicsSceneMouseEvent * event)
             m_grabIndex = i;
         }
     }
+    m_startPoints = m_linePoints;
 }
 
 
@@ -417,6 +419,27 @@ void GraphicsItemNode::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     graphicsScene->possiblyExpandSceneRectangle(&nodesToMove);
 
     fixEdgePaths(&nodesToMove);
+}
+
+void GraphicsItemNode::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+    QGraphicsItem::mouseReleaseEvent(event);
+    if (m_startPoints.empty() || !g_undoStack) return;
+    QPointF shift = m_linePoints[0] - m_startPoints[0];
+    if (shift.isNull()) return;
+
+    auto *graphicsScene = dynamic_cast<BandageGraphicsScene *>(scene());
+    std::vector<GraphicsItemNode *> movedNodes;
+    if (isSelected())
+        movedNodes = graphicsScene->getSelectedGraphicsItemNodes();
+    else
+        movedNodes.push_back(this);
+
+    std::vector<MoveNodesCommand::NodeMove> moves;
+    moves.reserve(movedNodes.size());
+    for (auto *node : movedNodes)
+        moves.push_back({node->m_deBruijnNode->getName(), shift});
+    g_undoStack->push(new MoveNodesCommand(std::move(moves)));
 }
 
 
