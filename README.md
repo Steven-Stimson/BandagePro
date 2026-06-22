@@ -65,12 +65,6 @@ nmake
 
 For detailed build instructions, see [BUILD.md](BUILD.md).
 
-## Documentation
-
-- [Undo/Redo Implementation](UNDO_REDO_IMPLEMENTATION.md) - Technical details of the undo/redo system
-- [Build Guide](BUILD.md) - Comprehensive build instructions for all platforms
-- [Windows Build Guide](WINDOWS_BUILD_GUIDE.md) - Windows-specific build instructions
-
 ## Usage
 
 The undo/redo functionality works automatically with existing Bandage operations:
