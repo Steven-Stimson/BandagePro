@@ -28,6 +28,7 @@
 #include <QRectF>
 #include "../program/globals.h"
 #include <QThread>
+#include <QUndoStack>
 #include "../ogdf/energybased/FMMMLayout.h"
 
 class GraphicsViewZoom;
@@ -51,6 +52,7 @@ public:
 private:
     Ui::MainWindow *ui;
     MyGraphicsScene * m_scene;
+    QUndoStack * m_undoStack;
 
     GraphicsViewZoom * m_graphicsViewZoom;
     double m_previousZoomSpinBoxValue;

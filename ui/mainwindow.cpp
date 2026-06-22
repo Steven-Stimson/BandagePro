@@ -46,6 +46,7 @@
 #include <QMainWindow>
 #include "blastsearchdialog.h"
 #include "../graph/assemblygraph.h"
+#include "../graph/graphcommand.h"
 #include "mygraphicsview.h"
 #include "graphicsviewzoom.h"
 #include "mygraphicsscene.h"
@@ -107,6 +108,8 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
 
     m_scene = new MyGraphicsScene(this);
     g_graphicsView->setScene(m_scene);
+
+    m_undoStack = new QUndoStack(this);
 
     setInfoTexts();
 
@@ -193,6 +196,13 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     connect(ui->actionChange_node_name, SIGNAL(triggered(bool)), this, SLOT(changeNodeName()));
     connect(ui->actionChange_node_depth, SIGNAL(triggered(bool)), this, SLOT(changeNodeDepth()));
     connect(ui->moreInfoButton, SIGNAL(clicked(bool)), this, SLOT(openGraphInfoDialog()));
+
+    QAction * undoAction = m_undoStack->createUndoAction(this, tr("&Undo"));
+    undoAction->setShortcuts(QKeySequence::Undo);
+    QAction * redoAction = m_undoStack->createRedoAction(this, tr("&Redo"));
+    redoAction->setShortcuts(QKeySequence::Redo);
+    ui->menuEdit->addAction(undoAction);
+    ui->menuEdit->addAction(redoAction);
 
     connect(this, SIGNAL(windowLoaded()), this, SLOT(afterMainWindowShow()), Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
 }
@@ -2350,11 +2360,14 @@ void MainWindow::removeSelection()
     std::vector<DeBruijnEdge *> selectedEdges = m_scene->getSelectedEdges();
     std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
 
+    if (selectedNodes.empty())
+        return;
+
+    DeleteNodesCommand * command = new DeleteNodesCommand(g_assemblyGraph, selectedNodes, m_scene);
+    m_undoStack->push(command);
+
     g_assemblyGraph->removeGraphicsItemEdges(&selectedEdges, true, m_scene);
     g_assemblyGraph->removeGraphicsItemNodes(&selectedNodes, true, m_scene);
-
-    g_assemblyGraph->deleteEdges(&selectedEdges);
-    g_assemblyGraph->deleteNodes(&selectedNodes);
 
     g_assemblyGraph->determineGraphInfo();
     displayGraphDetails();
@@ -2428,10 +2441,12 @@ void MainWindow::mergeSelectedNodes()
         return;
     }
 
-    bool success = g_assemblyGraph->mergeNodes(nodesToMerge, m_scene, true);
+    MergeNodesCommand * command = new MergeNodesCommand(g_assemblyGraph, nodesToMerge, m_scene, true);
+    m_undoStack->push(command);
 
-    if (!success)
+    if (!command->isValid())
     {
+        m_undoStack->undo();
         QMessageBox::information(this, "Nodes cannot be merged", "You can only merge nodes that are in a single, unbranching path with no extra edges.");
         return;
     }
@@ -2510,9 +2525,14 @@ void MainWindow::changeNodeName()
 
     if (changeNodeNameDialog.exec()) //The user clicked OK
     {
-        g_assemblyGraph->changeNodeName(oldName, changeNodeNameDialog.getNewName());
-        selectionChanged();
-        cleanUpAllBlast();
+        QString newName = changeNodeNameDialog.getNewName();
+        if (newName != oldName)
+        {
+            ChangeNodeNameCommand * command = new ChangeNodeNameCommand(g_assemblyGraph, selectedNode, newName);
+            m_undoStack->push(command);
+            selectionChanged();
+            cleanUpAllBlast();
+        }
     }
 }
 
@@ -2526,17 +2546,23 @@ void MainWindow::changeNodeDepth()
     }
 
     double oldDepth = g_assemblyGraph->getMeanDepth(selectedNodes);
-    ChangeNodeDepthDialog changeNodeDepthDialog(this, &selectedNodes,
-                                                oldDepth);
+    ChangeNodeDepthDialog changeNodeDepthDialog(this, &selectedNodes, oldDepth);
 
     if (changeNodeDepthDialog.exec()) //The user clicked OK
     {
-        g_assemblyGraph->changeNodeDepth(&selectedNodes,
-                                             changeNodeDepthDialog.getNewDepth());
-        selectionChanged();
-        g_assemblyGraph->recalculateAllDepthsRelativeToDrawnMean();
-        g_assemblyGraph->recalculateAllNodeWidths();
-        g_graphicsView->viewport()->update();
+        double newDepth = changeNodeDepthDialog.getNewDepth();
+        if (newDepth != oldDepth)
+        {
+            for (size_t i = 0; i < selectedNodes.size(); ++i)
+            {
+                ChangeNodeDepthCommand * command = new ChangeNodeDepthCommand(g_assemblyGraph, selectedNodes[i], newDepth);
+                m_undoStack->push(command);
+            }
+            selectionChanged();
+            g_assemblyGraph->recalculateAllDepthsRelativeToDrawnMean();
+            g_assemblyGraph->recalculateAllNodeWidths();
+            g_graphicsView->viewport()->update();
+        }
     }
 }
 

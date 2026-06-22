@@ -38,6 +38,7 @@ SOURCES += \
     graph/debruijnedge.cpp \
     graph/graphicsitemnode.cpp \
     graph/graphicsitemedge.cpp \
+    graph/graphcommand.cpp \
     ui/mainwindow.cpp \
     ui/graphicsviewzoom.cpp \
     ui/settingsdialog.cpp \
@@ -128,6 +129,7 @@ HEADERS  += \
     graph/graphicsitemnode.h \
     graph/graphicsitemedge.h \
     graph/ogdfnode.h \
+    graph/graphcommand.h \
     ui/mainwindow.h \
     ui/graphicsviewzoom.h \
     ui/settingsdialog.h \
