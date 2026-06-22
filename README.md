@@ -1,6 +1,6 @@
 # Bandage Pro
 
-A fork of [Bandage](https://github.com/rrwick/Bandage) with enhanced undo/redo functionality.
+A fork of [Bandage](https://github.com/rrwick/Bandage) with enhanced functionality.
 
 ## What's New
 
