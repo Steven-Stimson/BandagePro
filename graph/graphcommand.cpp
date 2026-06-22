@@ -99,6 +99,8 @@ void DeleteNodesCommand::redo()
     }
 
     std::vector<DeBruijnNode *> nodesToDelete;
+    std::vector<DeBruijnEdge *> edgesToRemove;
+
     for (int i = 0; i < m_deletedNodes.size(); ++i)
     {
         DeBruijnNode * node = m_graph->m_deBruijnGraphNodes[m_deletedNodes[i].name];
@@ -106,6 +108,21 @@ void DeleteNodesCommand::redo()
             nodesToDelete.push_back(node);
     }
 
+    // Collect edges to remove from scene
+    for (size_t i = 0; i < nodesToDelete.size(); ++i)
+    {
+        const std::vector<DeBruijnEdge *> * edges = nodesToDelete[i]->getEdgesPointer();
+        for (size_t j = 0; j < edges->size(); ++j)
+            edgesToRemove.push_back((*edges)[j]);
+    }
+
+    // Remove from scene first
+    if (!edgesToRemove.empty())
+        m_graph->removeGraphicsItemEdges(&edgesToRemove, true, m_scene);
+    if (!nodesToDelete.empty())
+        m_graph->removeGraphicsItemNodes(&nodesToDelete, true, m_scene);
+
+    // Then delete from graph
     m_graph->deleteNodes(&nodesToDelete);
 }
 
@@ -143,6 +160,22 @@ void DeleteNodesCommand::undo()
                                    edgeSnapshot.overlap,
                                    static_cast<EdgeOverlapType>(edgeSnapshot.overlapType));
     }
+
+    // Add restored nodes back to the scene
+    std::vector<DeBruijnNode *> nodesToDraw;
+    for (int i = 0; i < m_deletedNodes.size(); ++i)
+    {
+        NodeSnapshot & snapshot = m_deletedNodes[i];
+        if (snapshot.isDrawn)
+        {
+            DeBruijnNode * node = restoredNodes[snapshot.name];
+            if (node)
+                nodesToDraw.push_back(node);
+        }
+    }
+
+    if (!nodesToDraw.empty())
+        m_graph->addGraphicsItemsToScene(&nodesToDraw, m_scene);
 }
 
 MergeNodesCommand::MergeNodesCommand(AssemblyGraph * graph,
