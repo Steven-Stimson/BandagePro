@@ -24,6 +24,8 @@ Pre-built Linux and Mac binaries are available from [Releases](https://github.co
 
 ### CMake
 ```shell
+git clone https://github.com/Steven-Stimson/BandagePro.git
+cd BandagePro
 mkdir build
 cd build
 cmake ..
