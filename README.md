@@ -17,11 +17,6 @@ BandagePro++ is a GUI program that allows users to interact with the assembly gr
 
 *De novo* assembly graphs contain not only assembled contigs but also the connections between those contigs, which were previously not easily accessible. Bandage visualises assembly graphs, with connections, using graph layout algorithms. Nodes in the drawn graph, which represent contigs, can be automatically labelled with their ID, length or depth. Users can interact with the graph by moving, labelling and colouring nodes, and BandagePro++ extends these interactions with undo/redo support and richer graph editing capabilities. Sequence information can also be extracted directly from the graph viewer. By displaying connections between contigs, Bandage opens up new possibilities for analysing and improving *de novo* assemblies that are not possible by looking at contigs alone.
 
-## Help
-
-BandagePro++ documentation is available on the <a href="https://github.com/asl/BandageProPP/wiki" target="_blank">BandagePro++ GitHub wiki</a>.
-
-BandagePro++ help tips are also built into the program. Throughout the UI, you will find these icons next to controls and settings: <img src="http://rrwick.github.io/Bandage/images/helptext.png" alt="help text icon" width="16" height="16">. Click them to see a description of that element of Bandage.
 
 ## Prerequisites (for building from the source code)
   * Qt 6
