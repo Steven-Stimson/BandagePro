@@ -3,7 +3,7 @@ name: build-test
 on:
   workflow_dispatch:
   push:
-    branches: [ dev ]
+    branches: [ dev, 'BandagePro[+][+]' ]
   pull_request:
     branches: [ dev ]
 
