@@ -63,11 +63,6 @@ make
 New contributors are welcome! If you're interested or have ideas, please use Issues section in the repo.
 
 
-## Citation
-
-TBD
-
-
 ## Credits
 
 BandagePro++ makes use of the <a href="http://www.ogdf.net/" target="_blank">OGDF</a> library for performing graph layout algorithms. Big thanks goes out to the OGDF developers for their excellent work!
