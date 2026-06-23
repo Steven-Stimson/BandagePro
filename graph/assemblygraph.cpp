@@ -1454,7 +1454,7 @@ void AssemblyGraph::buildDeBruijnGraphFromPlainFasta(QString fullFileName)
             circularNodeNames.push_back(name);
 
         // SKESA circularity
-        if (thisNodeDetails.size() == 4 and thisNodeDetails[3] == "Circ")
+        if (thisNodeDetails.size() == 4 && thisNodeDetails[3] == "Circ")
             circularNodeNames.push_back(name);
 
         if (name.length() < 1)
