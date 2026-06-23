@@ -1,8 +1,3 @@
-[![License](https://img.shields.io/badge/licence-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/asl/BandageProPP?include_prereleases)
-[![GitHub Downloads](https://img.shields.io/github/downloads/asl/BandageProPP/total.svg?style=social&logo=github&label=Download)](https://github.com/asl/BandageProPP/releases)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/asl/BandageProPP/test.yml?branch=dev)
-
 # <img src="http://rrwick.github.io/Bandage/images/logo.png" alt="Bandage" width="115" height="115" align="middle">BandagePro++
 
 ## IMPORTANT
@@ -15,16 +10,6 @@ BandagePro++ significantly extends the original Bandage experience with a focus 
 
 * **Undo / Redo support** — Experiment freely with graph edits; any change can be reverted and re-applied.
 * **Enhanced graph editing** — Improved tools for manipulating and refining assembly graphs directly within the visualizer.
-
-## Table of Contents
-* [Intro](https://github.com/asl/BandageProPP#intro)
-* [Help](https://github.com/asl/BandageProPP#help)
-* [Pre-built binaries](https://github.com/asl/BandageProPP#pre-built-binaries)
-* [Building from source](https://github.com/asl/BandageProPP#building-from-source)
-* [Contributing](https://github.com/asl/BandageProPP#contributing)
-* [Credits](https://github.com/asl/BandageProPP#credits)
-* [License](https://github.com/asl/BandageProPP#license)
-
 
 ## Intro
 
