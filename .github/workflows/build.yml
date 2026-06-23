@@ -110,7 +110,7 @@ jobs:
           path: BandagePro-macOS.dmg
 
   build-windows:
-    runs-on: windows-2019
+    runs-on: windows-2022
     name: '🧊 Windows'
     steps:
       - name: '🧰 Checkout'
@@ -127,6 +127,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x64
+          toolset: 14.29
 
       - name: '🚧 Build BandagePro'
         shell: cmd
