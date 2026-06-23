@@ -33,7 +33,7 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-QtCache
 
       - name: '⚙️ Install AppImage dependencies'
-        run: sudo apt-get install -y appstream libxcb-cursor0
+        run: sudo apt-get install -y appstream libxcb-cursor0 imagemagick
 
       - name: '🚧 Build BandagePro'
         run: |
