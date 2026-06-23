@@ -2,7 +2,7 @@
 
 ## IMPORTANT
 
-**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage).** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
+**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage)**. It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
 
 ## What's New
 
@@ -25,7 +25,7 @@ BandagePro++ is a GUI program that allows users to interact with the assembly gr
 
 ## Pre-built binaries
 
-Pre-built Linux and Mac binaries are available from [Releases](https://github.com/asl/BandageProPP/releases) page.
+Pre-built Linux and Mac binaries are available from [Releases](https://github.com/asl/BandagePro/releases) page.
 
 ## Building from source
 
