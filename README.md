@@ -91,9 +91,3 @@ This program is distributed under the same license as the original Bandage.
 - Steven Stimson - Undo/Redo implementation
 
 Based on the original work by Ryan Wick and contributors at [rrwick/Bandage](https://github.com/rrwick/Bandage).
-
-## Citation
-
-If you use Bandage Pro in your research, please cite the original Bandage paper:
-
-Wick R.R., Schultz M.B., Zobel J. & Holt K.E. (2015). Bandage: interactive visualisation of de novo genome assemblies. Bioinformatics, 31(20), 3350-3352. doi:10.1093/bioinformatics/btv383
