@@ -19,39 +19,75 @@ jobs:
     runs-on: ubuntu-24.04
     name: '🐧 Ubuntu 24.04'
     steps:
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v3
+
       - name: '🧰 Checkout'
         uses: actions/checkout@v4
 
-      - name: '⚙️ Install Qt'
+      - name: '⚙️ Install Qt and dependencies'
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
           cache: true
           cache-key-prefix: ${{ runner.os }}-QtCache
 
+      - name: '⚙️ Install AppImage dependencies'
+        run: sudo apt-get install -y appstream libxcb-cursor0
+
       - name: '🚧 Build BandagePro'
         run: |
           qmake BandagePro.pro
           make -j$(nproc)
 
-      - name: '📦 Package Linux build'
+      - name: '📦 Create AppImage'
+        working-directory: ${{github.workspace}}
         run: |
-          mkdir -p BandagePro-Linux
-          cp BandagePro BandagePro-Linux/
-          cp build_scripts/sample_LastGraph BandagePro-Linux/ || true
-          chmod +x BandagePro-Linux/BandagePro
-          tar czf BandagePro-Linux-x86_64.tar.gz BandagePro-Linux/
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/256x256/apps
+
+          cp BandagePro AppDir/usr/bin/
+          cp build_scripts/sample_LastGraph AppDir/usr/bin/ || true
+          cp images/icon.png AppDir/usr/share/icons/hicolor/256x256/apps/bandagepro.png
+
+          cat > AppDir/usr/share/applications/bandagepro.desktop << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=BandagePro
+          Exec=BandagePro %F
+          Icon=bandagepro
+          Comment=Bandage Pro - assembly graph visualisation
+          Categories=Science;Biology;
+          Terminal=false
+          EOF
+
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy*.AppImage
+
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/bandagepro.desktop \
+            --icon-file AppDir/usr/share/icons/hicolor/256x256/apps/bandagepro.png \
+            --plugin qt \
+            --output appimage
+
+          mv BandagePro-x86_64.AppImage BandagePro-Linux-${{steps.commit.outputs.short}}.AppImage
 
       - name: '📤 Upload Linux artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: BandagePro-Linux
-          path: BandagePro-Linux-x86_64.tar.gz
+          name: BandagePro-Linux-${{steps.commit.outputs.short}}.AppImage
+          path: BandagePro-Linux-${{steps.commit.outputs.short}}.AppImage
 
   build-macos:
     runs-on: macos-latest
     name: '🍎 macOS'
     steps:
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v3
+
       - name: '🧰 Checkout'
         uses: actions/checkout@v4
 
@@ -97,22 +133,25 @@ jobs:
         run: |
           macdeployqt BandagePro.app -dmg || true
           if [ -f BandagePro.dmg ]; then
-            mv BandagePro.dmg BandagePro-macOS.dmg
+            mv BandagePro.dmg BandagePro-macOS-${{steps.commit.outputs.short}}.dmg
           else
-            tar czf BandagePro-macOS.tar.gz BandagePro.app/
-            mv BandagePro-macOS.tar.gz BandagePro-macOS.dmg
+            tar czf BandagePro-macOS-${{steps.commit.outputs.short}}.tar.gz BandagePro.app/
+            mv BandagePro-macOS-${{steps.commit.outputs.short}}.tar.gz BandagePro-macOS-${{steps.commit.outputs.short}}.dmg
           fi
 
       - name: '📤 Upload macOS artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: BandagePro-macOS
-          path: BandagePro-macOS.dmg
+          name: BandagePro-macOS-${{steps.commit.outputs.short}}.dmg
+          path: BandagePro-macOS-${{steps.commit.outputs.short}}.dmg
 
   build-windows:
     runs-on: windows-2022
     name: '🧊 Windows'
     steps:
+      - id: commit
+        uses: pr-mpt/actions-commit-hash@v3
+
       - name: '🧰 Checkout'
         uses: actions/checkout@v4
 
@@ -138,26 +177,25 @@ jobs:
       - name: '📦 Package Windows build'
         shell: bash
         run: |
-          mkdir -p BandagePro-Windows
+          mkdir -p BandagePro
           if [ -f release/BandagePro.exe ]; then
-            cp release/BandagePro.exe BandagePro-Windows/
+            cp release/BandagePro.exe BandagePro/
           elif [ -f BandagePro.exe ]; then
-            cp BandagePro.exe BandagePro-Windows/
+            cp BandagePro.exe BandagePro/
           fi
-          cp build_scripts/sample_LastGraph BandagePro-Windows/ || true
+          cp build_scripts/sample_LastGraph BandagePro/ || true
 
-          if [ -f BandagePro-Windows/BandagePro.exe ]; then
-            windeployqt BandagePro-Windows/BandagePro.exe --release --compiler-runtime
+          if [ -f BandagePro/BandagePro.exe ]; then
+            windeployqt BandagePro/BandagePro.exe --release --compiler-runtime
           fi
 
-          cd BandagePro-Windows
-          7z a ../BandagePro-Windows-x86_64.zip *
+          7z a BandagePro-win-${{steps.commit.outputs.short}}.zip BandagePro -r
 
       - name: '📤 Upload Windows artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: BandagePro-Windows
-          path: BandagePro-Windows-x86_64.zip
+          name: BandagePro-win-${{steps.commit.outputs.short}}.zip
+          path: BandagePro-win-${{steps.commit.outputs.short}}.zip
 
   release:
     needs: [build-linux, build-macos, build-windows]
@@ -171,8 +209,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            BandagePro-Linux/BandagePro-Linux-x86_64.tar.gz
-            BandagePro-macOS/BandagePro-macOS.dmg
-            BandagePro-Windows/BandagePro-Windows-x86_64.zip
+            **/BandagePro-Linux-*.AppImage
+            **/BandagePro-macOS-*.dmg
+            **/BandagePro-win-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
