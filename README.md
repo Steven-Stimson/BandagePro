@@ -1,18 +1,23 @@
 # Bandage Pro
 
+**Bandage Pro is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
+
 A fork of [Bandage](https://github.com/rrwick/Bandage) with enhanced functionality.
 
 ## What's New
 
-This fork adds comprehensive **undo/redo support** for graph manipulation operations:
+Bandage Pro significantly extends the original Bandage experience with a focus on interactive graph manipulation and editing:
 
-### ✨ New Features
+### ✨ Enhanced Graph Editing
+
+This fork adds comprehensive **undo/redo support** and richer graph manipulation capabilities for assembly graph editing:
 
 - **Full Undo/Redo Stack**: Multi-level undo/redo for all graph operations
 - **Keyboard Shortcuts**: 
   - `Ctrl+Z` - Undo
   - `Ctrl+Shift+Z` - Redo
 - **Menu Integration**: Undo/Redo actions in the Manipulate menu
+- **Improved Graph Manipulation**: Enhanced tools for manipulating and refining assembly graphs directly within the visualizer
 
 ### 🔄 Supported Operations
 
@@ -76,7 +81,7 @@ The undo/redo functionality works automatically with existing Bandage operations
 
 ## Original Bandage
 
-This project is based on [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.
+This project is based on [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick. As a spiritual successor, Bandage Pro aims to preserve the original vision of intuitive assembly graph visualization while extending it with modern graph editing capabilities.
 
 For information about the original Bandage features and usage, please visit the [original repository](https://github.com/rrwick/Bandage).
 
