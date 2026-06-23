@@ -26,7 +26,6 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
-          modules: 'qtsvg'
           cache: true
           cache-key-prefix: ${{ runner.os }}-QtCache
 
@@ -60,7 +59,6 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
-          modules: 'qtsvg'
           cache: true
           cache-key-prefix: ${{ runner.os }}-QtCache
 
@@ -124,7 +122,6 @@ jobs:
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ env.QT_VERSION }}
-          modules: 'qtsvg'
           cache: true
           cache-key-prefix: ${{ runner.os }}-QtCache
 
