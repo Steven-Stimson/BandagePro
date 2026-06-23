@@ -5,7 +5,7 @@ on:
   push:
     tags:
       - "v*.*"
-    branches: [ dev, 'BandagePro[+][+]' ]
+    branches: [ dev, 'BandagePro*' ]
 
 env:
   BUILD_TYPE: Release
