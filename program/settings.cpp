@@ -73,7 +73,18 @@ Settings::Settings()
     displayNodeDepth = false;
     displayNodeCsvData = false;
     displayNodeCsvDataCol = 0;
-    labelFont = QFont();
+    labelFont = QFont::systemFont(QFont::GeneralFont);
+#ifdef Q_OS_WIN
+    // MS Sans Serif is a legacy bitmap/raster font that Qt6's DirectWrite
+    // backend cannot render. If the system default happens to resolve to it
+    // (e.g. through the old "MS Shell Dlg" alias), explicitly fall back to
+    // Arial, a TrueType font available on all supported Windows versions.
+    const QString family = labelFont.family();
+    if (family.compare("MS Sans Serif", Qt::CaseInsensitive) == 0 ||
+        family.compare("MS Shell Dlg", Qt::CaseInsensitive) == 0)
+        labelFont = QFont("Arial", labelFont.pointSize());
+    labelFont.setStyleStrategy(QFont::PreferOutline);
+#endif
     textOutline = false;
     antialiasing = true;
     positionTextNodeCentre = false;
