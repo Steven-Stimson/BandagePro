@@ -1,19 +1,19 @@
 //Copyright 2015 Ryan Wick
 
-//This file is part of Bandage.
+//This file is part of BandagePro.
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <QtTest/QtTest>
@@ -30,7 +30,7 @@
 #include "../program/globals.h"
 #include "../command_line/commoncommandlinefunctions.h"
 
-class BandageTests : public QObject
+class BandageProTests : public QObject
 {
     Q_OBJECT
 
@@ -57,7 +57,7 @@ private slots:
     void changeNodeNames();
     void changeNodeDepths();
     void blastQueryPaths();
-    void bandageInfo();
+    void bandageproInfo();
 
 
 private:
@@ -73,7 +73,7 @@ private:
 
 
 
-void BandageTests::loadFastg()
+void BandageProTests::loadFastg()
 {
     createGlobals();
     bool fastgGraphLoaded = g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -93,7 +93,7 @@ void BandageTests::loadFastg()
 }
 
 
-void BandageTests::loadLastGraph()
+void BandageProTests::loadLastGraph()
 {
     createGlobals();
     bool lastGraphLoaded = g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.LastGraph");
@@ -114,7 +114,7 @@ void BandageTests::loadLastGraph()
 
 
 
-void BandageTests::loadTrinity()
+void BandageProTests::loadTrinity()
 {
     createGlobals();
     bool trinityLoaded = g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.Trinity.fasta");
@@ -136,7 +136,7 @@ void BandageTests::loadTrinity()
 
 //LastGraph files have no overlap in the edges, so these tests look at paths
 //where the connections are simple.
-void BandageTests::pathFunctionsOnLastGraph()
+void BandageProTests::pathFunctionsOnLastGraph()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.LastGraph");
@@ -183,7 +183,7 @@ void BandageTests::pathFunctionsOnLastGraph()
 
 //FASTG files have overlaps in the edges, so these tests look at paths where
 //the overlap has to be removed from the path sequence.
-void BandageTests::pathFunctionsOnFastg()
+void BandageProTests::pathFunctionsOnFastg()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -200,7 +200,7 @@ void BandageTests::pathFunctionsOnFastg()
 
 //This function tests paths on a GFA file which keeps its sequences in the GFA
 //file.
-void BandageTests::pathFunctionsOnGfaSequencesInGraph()
+void BandageProTests::pathFunctionsOnGfaSequencesInGraph()
 {
     createGlobals();
     bool gfaLoaded = g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test_plasmids.gfa");
@@ -224,7 +224,7 @@ void BandageTests::pathFunctionsOnGfaSequencesInGraph()
 
 //This function tests paths on a GFA file which keeps its sequences in a
 //separate FASTA file.
-void BandageTests::pathFunctionsOnGfaSequencesInFasta()
+void BandageProTests::pathFunctionsOnGfaSequencesInFasta()
 {
     createGlobals();
     bool gfaLoaded = g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test_plasmids_separate_sequences.gfa");
@@ -265,7 +265,7 @@ void BandageTests::pathFunctionsOnGfaSequencesInFasta()
 }
 
 
-void BandageTests::graphLocationFunctions()
+void BandageProTests::graphLocationFunctions()
 {
     //First do some tests with a FASTG, where the overlap results in a simpler
     //sitations: all positions have a reverse complement position in the
@@ -327,7 +327,7 @@ void BandageTests::graphLocationFunctions()
 
 
 
-void BandageTests::loadCsvData()
+void BandageProTests::loadCsvData()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -393,7 +393,7 @@ void BandageTests::loadCsvData()
 }
 
 
-void BandageTests::loadCsvDataTrinity()
+void BandageProTests::loadCsvDataTrinity()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.Trinity.fasta");
@@ -422,7 +422,7 @@ void BandageTests::loadCsvDataTrinity()
     QCOMPARE(node3940Plus->getCsvLine(0), QString("3940PLUS"));
 }
 
-void BandageTests::blastSearch()
+void BandageProTests::blastSearch()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -465,7 +465,7 @@ void BandageTests::blastSearch()
 
 
 
-void BandageTests::blastSearchFilters()
+void BandageProTests::blastSearchFilters()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -512,7 +512,7 @@ void BandageTests::blastSearchFilters()
 
 
 
-void BandageTests::graphScope()
+void BandageProTests::graphScope()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -669,7 +669,7 @@ void BandageTests::graphScope()
     deleteBlastTempDirectory();
 }
 
-void BandageTests::commandLineSettings()
+void BandageProTests::commandLineSettings()
 {
     createGlobals();
     QStringList commandLineSettings;
@@ -1001,7 +1001,7 @@ void BandageTests::commandLineSettings()
 }
 
 
-void BandageTests::sciNotComparisons()
+void BandageProTests::sciNotComparisons()
 {
     SciNot sn01(1.0, 10);
     SciNot sn02(10.0, 9);
@@ -1046,7 +1046,7 @@ void BandageTests::sciNotComparisons()
 }
 
 
-void BandageTests::graphEdits()
+void BandageProTests::graphEdits()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -1087,7 +1087,7 @@ void BandageTests::graphEdits()
 
 //Saving a Velvet graph to GFA is a bit complex because the node sequence offset
 //must be filled in.  This function tests aspects of that process.
-void BandageTests::velvetToGfa()
+void BandageProTests::velvetToGfa()
 {
     //First load the graph as a LastGraph and pull out some information and a
     //circular path sequence.
@@ -1138,7 +1138,7 @@ void BandageTests::velvetToGfa()
 }
 
 
-void BandageTests::spadesToGfa()
+void BandageProTests::spadesToGfa()
 {
     //First load the graph as a FASTG and pull out some information and a
     //path sequence.
@@ -1189,7 +1189,7 @@ void BandageTests::spadesToGfa()
 }
 
 
-void BandageTests::mergeNodesOnGfa()
+void BandageProTests::mergeNodesOnGfa()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test_plasmids.gfa");
@@ -1248,7 +1248,7 @@ void BandageTests::mergeNodesOnGfa()
 
 
 
-void BandageTests::changeNodeNames()
+void BandageProTests::changeNodeNames()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -1268,7 +1268,7 @@ void BandageTests::changeNodeNames()
     QCOMPARE(nodeCountBefore, nodeCountAfter);
 }
 
-void BandageTests::changeNodeDepths()
+void BandageProTests::changeNodeDepths()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test.fastg");
@@ -1295,7 +1295,7 @@ void BandageTests::changeNodeDepths()
     QCOMPARE(0.5, node7Minus->getDepth());
 }
 
-void BandageTests::blastQueryPaths()
+void BandageProTests::blastQueryPaths()
 {
     createGlobals();
     g_assemblyGraph->loadGraphFromFile(getTestDirectory() + "test_query_paths.gfa");
@@ -1431,7 +1431,7 @@ void BandageTests::blastQueryPaths()
 }
 
 
-void BandageTests::bandageInfo()
+void BandageProTests::bandageproInfo()
 {
     int n50 = 0;
     int shortestNode = 0;
@@ -1495,7 +1495,7 @@ void BandageTests::bandageInfo()
 
 
 
-void BandageTests::createGlobals()
+void BandageProTests::createGlobals()
 {
     g_settings.reset(new Settings());
     g_memory.reset(new Memory());
@@ -1504,7 +1504,7 @@ void BandageTests::createGlobals()
     g_graphicsView = new MyGraphicsView();
 }
 
-bool BandageTests::createBlastTempDirectory()
+bool BandageProTests::createBlastTempDirectory()
 {
     //Running from the command line, it makes more sense to put the temp
     //directory in the current directory.
@@ -1517,7 +1517,7 @@ bool BandageTests::createBlastTempDirectory()
     return true;
 }
 
-void BandageTests::deleteBlastTempDirectory()
+void BandageProTests::deleteBlastTempDirectory()
 {
     if (g_blastSearch->m_tempDirectory != "" &&
             QDir(g_blastSearch->m_tempDirectory).exists() &&
@@ -1525,16 +1525,16 @@ void BandageTests::deleteBlastTempDirectory()
         QDir(g_blastSearch->m_tempDirectory).removeRecursively();
 }
 
-QString BandageTests::getTestDirectory()
+QString BandageProTests::getTestDirectory()
 {
     QDir directory = QDir::current();
 
-    //We want to find a directory "Bandage/tests/".  Keep backing up in the
+    //We want to find a directory "BandagePro/tests/".  Keep backing up in the
     //directory structure until we find it.
     QString path;
     while (true)
     {
-        path = directory.path() + "/Bandage/tests/";
+        path = directory.path() + "/BandagePro/tests/";
         if (QDir(path).exists())
             return path;
         if (!directory.cdUp())
@@ -1544,7 +1544,7 @@ QString BandageTests::getTestDirectory()
     return "";
 }
 
-DeBruijnEdge * BandageTests::getEdgeFromNodeNames(QString startingNodeName,
+DeBruijnEdge * BandageProTests::getEdgeFromNodeNames(QString startingNodeName,
                                                   QString endingNodeName)
 {
     DeBruijnNode * startingNode = g_assemblyGraph->m_deBruijnGraphNodes[startingNodeName];
@@ -1561,7 +1561,7 @@ DeBruijnEdge * BandageTests::getEdgeFromNodeNames(QString startingNodeName,
 
 //This function checks to see if two circular sequences match.  It needs to
 //check each possible rotation, as well as reverse complements.
-bool BandageTests::doCircularSequencesMatch(QByteArray s1, QByteArray s2)
+bool BandageProTests::doCircularSequencesMatch(QByteArray s1, QByteArray s2)
 {
     for (int i = 0; i < s1.length() - 1; ++i)
     {
@@ -1585,5 +1585,5 @@ bool BandageTests::doCircularSequencesMatch(QByteArray s1, QByteArray s2)
 
 
 
-QTEST_MAIN(BandageTests)
+QTEST_MAIN(BandageProTests)
 #include "bandagetests.moc"

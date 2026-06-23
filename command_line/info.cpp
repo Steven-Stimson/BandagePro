@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "info.h"
@@ -51,14 +51,14 @@ int bandageInfo(QStringList arguments)
 
     if (!checkIfFileExists(graphFilename))
     {
-        outputText("Bandage error: " + graphFilename + " does not exist.", &err);
+        outputText("BandagePro error: " + graphFilename + " does not exist.", &err);
         return 1;
     }
 
     QString error = checkForInvalidInfoOptions(arguments);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 
@@ -68,7 +68,7 @@ int bandageInfo(QStringList arguments)
     bool loadSuccess = g_assemblyGraph->loadGraphFromFile(graphFilename);
     if (!loadSuccess)
     {
-        err << "Bandage error: could not load " << graphFilename << Qt::endl;
+        err << "BandagePro error: could not load " << graphFilename << Qt::endl;
         return 1;
     }
 
@@ -153,7 +153,7 @@ void printInfoUsage(QTextStream * out, bool all)
 {
     QStringList text;
 
-    text << "Bandage info takes a graph file as input and outputs (to stdout) the following statistics about the graph:";
+    text << "BandagePro info takes a graph file as input and outputs (to stdout) the following statistics about the graph:";
     text << "* Node count: The number of nodes in the graph. Only positive nodes are counted (i.e. each complementary pair counts as one).";
     text << "* Edge count: The number of edges in the graph. Only one edge in each complementary pair is counted.";
     text << "* Smallest edge overlap: The smallest overlap size (in bp) for the edges in the graph.";
@@ -174,10 +174,10 @@ void printInfoUsage(QTextStream * out, bool all)
     text << "* Median depth: The median depth of the graph, by base.";
     text << "* Estimated sequence length: An estimate of the total number of bases in the original sequence, calculated by multiplying each node's length (minus overlaps) by its depth relative to the median.";
     text << "";
-    text << "Usage:    Bandage info <graph> [options]";
+    text << "Usage:    BandagePro info <graph> [options]";
     text << "";
     text << "Positional parameters:";
-    text << "<graph>             A graph file of any type supported by Bandage";
+    text << "<graph>             A graph file of any type supported by BandagePro";
     text << "";
     text << "Options:  --tsv               Output the information in a single tab-delimited line starting with the graph file";
     text << "";

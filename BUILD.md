@@ -1,6 +1,6 @@
 # Cross-Platform Build System
 
-This directory contains scripts and configurations for building Bandage on Linux, macOS, and Windows.
+This directory contains scripts and configurations for building BandagePro on Linux, macOS, and Windows.
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ This directory contains scripts and configurations for building Bandage on Linux
 This script will:
 - Detect your operating system
 - Find qmake in your PATH
-- Build Bandage
+- Build BandagePro
 - Create a platform-specific package
 
 ### Prerequisites
@@ -48,14 +48,14 @@ export PATH="/usr/local/opt/qt@5/bin:$PATH"
 
 ### Linux & macOS
 ```bash
-qmake Bandage.pro
+qmake BandagePro.pro
 make -j$(nproc)  # Linux
 make -j$(sysctl -n hw.ncpu)  # macOS
 ```
 
 ### Windows (Visual Studio Command Prompt)
 ```cmd
-qmake Bandage.pro
+qmake BandagePro.pro
 nmake
 ```
 
@@ -91,23 +91,23 @@ All builds use Qt 5.15.2 for consistency and compatibility.
 ## Build Output
 
 ### Linux
-- Executable: `Bandage`
-- Package: `Bandage-Linux.tar.gz` (contains executable and sample data)
+- Executable: `BandagePro`
+- Package: `BandagePro-Linux.tar.gz` (contains executable and sample data)
 
 ### macOS
-- App Bundle: `Bandage.app`
-- Package: `Bandage.dmg` (disk image with app bundle)
+- App Bundle: `BandagePro.app`
+- Package: `BandagePro.dmg` (disk image with app bundle)
 
 ### Windows
-- Executable: `Bandage.exe`
-- Package: `Bandage-Windows/` (directory with executable and Qt DLLs)
+- Executable: `BandagePro.exe`
+- Package: `BandagePro-Windows/` (directory with executable and Qt DLLs)
 
 ## Legacy Build Scripts
 
 The `build_scripts/` directory contains the original build scripts:
-- `bandage_build_linux.sh` - Original Linux static/dynamic build script
-- `bandage_build_mac.sh` - Original macOS build script
-- `bandage_build_windows.bat` - Original Windows build script
+- `bandagepro_build_linux.sh` - Original Linux static/dynamic build script
+- `bandagepro_build_mac.sh` - Original macOS build script
+- `bandagepro_build_windows.bat` - Original Windows build script
 
 These are kept for reference but the new `build.sh` script is recommended.
 
@@ -124,7 +124,7 @@ export PATH="/path/to/qt/bin:$PATH"
 ```
 
 ### Missing Qt modules
-Bandage requires:
+BandagePro requires:
 - Qt Core
 - Qt GUI
 - Qt Widgets
@@ -144,7 +144,7 @@ export PATH="/usr/local/opt/qt@5/bin:$PATH"
 ## Development
 
 ### Project Structure
-- `Bandage.pro` - Qt project file (main build configuration)
+- `BandagePro.pro` - Qt project file (main build configuration)
 - `graph/` - Graph data structures and algorithms
 - `ui/` - User interface components
 - `blast/` - BLAST integration
@@ -152,7 +152,7 @@ export PATH="/usr/local/opt/qt@5/bin:$PATH"
 - `ogdf/` - OGDF graph library integration
 
 ### Adding New Source Files
-Edit `Bandage.pro` and add your files to the appropriate section:
+Edit `BandagePro.pro` and add your files to the appropriate section:
 ```qmake
 SOURCES += \
     your/new/file.cpp
@@ -163,7 +163,7 @@ HEADERS += \
 
 Then rebuild:
 ```bash
-qmake Bandage.pro
+qmake BandagePro.pro
 make
 ```
 
@@ -177,4 +177,4 @@ When contributing platform-specific changes:
 
 ## License
 
-Bandage is licensed under the GNU General Public License v3.0 - see the COPYING file for details.
+BandagePro is licensed under the GNU General Public License v3.0 - see the COPYING file for details.

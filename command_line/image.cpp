@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "image.h"
@@ -57,7 +57,7 @@ int bandageImage(QStringList arguments)
 
     if (!checkIfFileExists(graphFilename))
     {
-        outputText("Bandage error: " + graphFilename + " does not exist", &err);
+        outputText("BandagePro error: " + graphFilename + " does not exist", &err);
         return 1;
     }
 
@@ -72,21 +72,21 @@ int bandageImage(QStringList arguments)
         pixelImage = false;
     else
     {
-        outputText("Bandage error: the output filename must end in .png, .jpg or .svg", &err);
+        outputText("BandagePro error: the output filename must end in .png, .jpg or .svg", &err);
         return 1;
     }
 
     QString error = checkForInvalidImageOptions(arguments);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 
     bool loadSuccess = g_assemblyGraph->loadGraphFromFile(graphFilename);
     if (!loadSuccess)
     {
-        outputText("Bandage error: could not load " + graphFilename, &err);
+        outputText("BandagePro error: could not load " + graphFilename, &err);
         return 1;
     }
 
@@ -99,7 +99,7 @@ int bandageImage(QStringList arguments)
 
     parseImageOptions(arguments, &width, &height);
 
-    //For Bandage image, it is necessary to position node labels at the
+    //For BandagePro image, it is necessary to position node labels at the
     //centre of the node, not the visible centre(s).  This is because there
     //is no viewport.
     g_settings->positionTextNodeCentre = true;
@@ -226,12 +226,12 @@ void printImageUsage(QTextStream * out, bool all)
 {
     QStringList text;
 
-    text << "Bandage image will generate an image file of the graph visualisation without opening the GUI.";
+    text << "BandagePro image will generate an image file of the graph visualisation without opening the GUI.";
     text << "";
-    text << "Usage:    Bandage image <graph> <outputfile> [options]";
+    text << "Usage:    BandagePro image <graph> <outputfile> [options]";
     text << "";
     text << "Positional parameters:";
-    text << "<graph>             A graph file of any type supported by Bandage";
+    text << "<graph>             A graph file of any type supported by BandagePro";
     text << "<outputfile>        The image file to be created (must end in '.jpg', '.png' or '.svg')";
     text << "";
     text << "Options:  --height <int>      Image height (default: 1000)";

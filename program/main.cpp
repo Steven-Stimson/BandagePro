@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "../ui/mainwindow.h"
@@ -44,10 +44,10 @@ void printUsage(QTextStream * out, bool all)
     QStringList text;
 
     text << "";
-    text << "Usage:    Bandage <command> [options]";
+    text << "Usage:    BandagePro <command> [options]";
     text << "";
-    text << "Commands: <blank>      Launch the Bandage GUI";
-    text << "load         Launch the Bandage GUI and load a graph file";
+    text << "Commands: <blank>      Launch the BandagePro GUI";
+    text << "load         Launch the BandagePro GUI and load a graph file";
     text << "info         Display information about a graph";
     text << "image        Generate an image file of a graph";
     text << "querypaths   Output graph paths for BLAST queries";
@@ -55,7 +55,7 @@ void printUsage(QTextStream * out, bool all)
     text << "";
     text << "Options:  --help       View this help message";
     text << "--helpall    View all command line settings";
-    text << "--version    View Bandage version number";
+    text << "--version    View BandagePro version number";
     text << "";
 
     if (all)
@@ -83,9 +83,9 @@ int main(int argc, char *argv[])
             first = arguments[0];
     }
 
-    // Create the application. Some ways of running Bandage require the normal platform while other command line only
-    // ways use the minimal platform. Frustratingly, Bandage image cannot render text properly with the minimal
-    // platform, so we need to use the full platform if Bandage image is run with text labels.
+    // Create the application. Some ways of running BandagePro require the normal platform while other command line only
+    // ways use the minimal platform. Frustratingly, BandagePro image cannot render text properly with the minimal
+    // platform, so we need to use the full platform if BandagePro image is run with text labels.
     bool imageWithText = (first.toLower() == "image") &&
                          (arguments.contains("--names") || arguments.contains("--lengths") ||
                           arguments.contains("--depth") || arguments.contains("--blasthits"));
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     if (g_memory->terminalWidth > 300) g_memory->terminalWidth = 300;
     #endif //Q_OS_WIN32
 
-    QApplication::setApplicationName("Bandage");
+    QApplication::setApplicationName("BandagePro");
     QApplication::setApplicationVersion(APP_VERSION);
 
     QTextStream out(stdout);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
         else if (checkForHelp(arguments))
         {
             out << Qt::endl;
-            out << getBandageTitleAsciiArt() << Qt::endl;
+            out << getBandageProTitleAsciiArt() << Qt::endl;
             out << "Version: " << QApplication::applicationVersion();
             printUsage(&out, false);
             return 0;
@@ -170,14 +170,14 @@ int main(int argc, char *argv[])
         else if (checkForHelpAll(arguments))
         {
             out << Qt::endl;
-            out << getBandageTitleAsciiArt() << Qt::endl;
+            out << getBandageProTitleAsciiArt() << Qt::endl;
             out << "Version: " << QApplication::applicationVersion();
             printUsage(&out, true);
             return 0;
         }
     }
 
-    //If the code got here, we assume the user is simply launching Bandage,
+    //If the code got here, we assume the user is simply launching BandagePro,
     //with or without some options to specify settings.
 
     //Check the settings.
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
     QString error = checkForInvalidOrExcessSettings(&argumentsCopy);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 

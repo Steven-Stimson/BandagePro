@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "load.h"
@@ -48,14 +48,14 @@ int bandageLoad(QStringList arguments)
 
     if (!checkIfFileExists(filename))
     {
-        outputText("Bandage error: " + filename + " does not exist", &err);
+        outputText("BandagePro error: " + filename + " does not exist", &err);
         return 1;
     }
 
     QString error = checkForInvalidLoadOptions(arguments);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 
@@ -72,12 +72,12 @@ void printLoadUsage(QTextStream * out, bool all)
 {
     QStringList text;
 
-    text << "Bandage load will open the Bandage GUI and immediately load the specified graph file.";
+    text << "BandagePro load will open the BandagePro GUI and immediately load the specified graph file.";
     text << "";
-    text << "Usage:    Bandage load <graph> [options]";
+    text << "Usage:    BandagePro load <graph> [options]";
     text << "";
     text << "Positional parameters:";
-    text << "<graph>             A graph file of any type supported by Bandage";
+    text << "<graph>             A graph file of any type supported by BandagePro";
     text << "";
     text << "Options:  --draw              Draw graph after loading";
     text << "";

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Bandage</string>
+   <string>BandagePro</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images/images.qrc">
@@ -2177,10 +2177,10 @@
      <normaloff>:/icons/icon.png</normaloff>:/icons/icon.png</iconset>
    </property>
    <property name="text">
-    <string>Bandage online help</string>
+    <string>Online help</string>
    </property>
    <property name="toolTip">
-    <string>Bandage online help</string>
+    <string>Online help</string>
    </property>
   </action>
   <action name="actionCopy_selected_node_path_to_clipboard">

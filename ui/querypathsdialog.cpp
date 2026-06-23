@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage.
+//This file is part of BandageProPro.
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandageProPro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandageProPro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandageProPro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "querypathsdialog.h"
@@ -143,7 +143,7 @@ QueryPathsDialog::QueryPathsDialog(QWidget * parent, BlastQuery * query) :
                                         "node) or complex (spanning multiple nodes). The columns in the table are as "
                                         "follows:"
                                         "<br><br>"
-                                        "<b>Path</b>: This is the query path through the graph, as written in Bandage's "
+                                        "<b>Path</b>: This is the query path through the graph, as written in BandagePro's "
                                         "path notation. The nodes in the path are separated by commas. The start position "
                                         "in the first node is shown in parentheses at the beginning of the path. The end "
                                         "position in the last node is shown in parentheses at the end of the path."

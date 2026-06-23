@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This is the script I use on my OS X 10.8 virtual machine to build the public release of Bandage.
+# This is the script I use on my OS X 10.8 virtual machine to build the public release of BandagePro.
 # It produces an app bundle ready for deployment. It requires that sample_LastGraph is in the
 # current directory.
 
@@ -13,24 +13,24 @@ if [ ! -d "Bandage" ]; then
   git clone https://github.com/rrwick/Bandage
 fi
 
-# Build Bandage.
+# Build BandagePro.
 cd Bandage/
 $QT_PATH/clang_64/bin/qmake
 make
 
-# Add the necessary libraries so Bandage can be deployed.
+# Add the necessary libraries so BandagePro can be deployed.
 $QT_PATH/clang_64/bin/macdeployqt Bandage.app
 cp $QT_PATH/clang_64/plugins/platforms/libqminimal.dylib Bandage.app/Contents/PlugIns/platforms/libqminimal.dylib
 
-# Get the Bandage version number from the main.cpp file and replace its dots with underscores.
+# Get the version number from the main.cpp file and replace its dots with underscores.
 cd ..
 VERSION_LINE=$(grep "setApplicationVersion" Bandage/program/main.cpp)
 IFS='"' read -ra ADDR <<< "$VERSION_LINE"
 VERSION="${ADDR[1]}"
 VERSION=${VERSION//\./_}
 
-# Zip Bandage, add the sample graph and clean up.
-ZIP="Bandage_Mac_v$VERSION.zip"
+# Zip BandagePro, add the sample graph and clean up.
+ZIP="BandagePro_Mac_v$VERSION.zip"
 ditto -c -k --sequesterRsrc --keepParent Bandage/Bandage.app $ZIP
 zip $ZIP sample_LastGraph 
 rm -rf Bandage/

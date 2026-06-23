@@ -50,21 +50,21 @@ Pre-built binaries for Linux, macOS, and Windows are available in [Releases](htt
 #### Linux
 ```bash
 sudo apt-get install qt5-qmake qtbase5-dev libqt5svg5-dev build-essential
-qmake Bandage.pro
+qmake BandagePro.pro
 make -j$(nproc)
 ```
 
 #### macOS
 ```bash
 brew install qt@5
-/usr/local/opt/qt@5/bin/qmake Bandage.pro
+/usr/local/opt/qt@5/bin/qmake BandagePro.pro
 make -j$(sysctl -n hw.ncpu)
 ```
 
 #### Windows
 ```bash
 # Install Qt 5.15+ and add to PATH
-qmake Bandage.pro
+qmake BandagePro.pro
 nmake
 ```
 
@@ -72,7 +72,7 @@ For detailed build instructions, see [BUILD.md](BUILD.md).
 
 ## Usage
 
-The undo/redo functionality works automatically with existing Bandage operations:
+The undo/redo functionality works automatically with existing BandagePro operations:
 
 1. Load a graph file
 2. Perform operations (delete, merge, rename nodes)

@@ -18,37 +18,37 @@ jobs:
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Build Bandage
+    - name: Build BandagePro
       shell: cmd
       run: |
-        qmake Bandage.pro
+        qmake BandagePro.pro
         nmake
 
     - name: Package Windows build
       shell: bash
       run: |
-        mkdir -p Bandage-Windows
-        if [ -f release/Bandage.exe ]; then
-          cp release/Bandage.exe Bandage-Windows/
-        elif [ -f Bandage.exe ]; then
-          cp Bandage.exe Bandage-Windows/
+        mkdir -p BandagePro-Windows
+        if [ -f release/BandagePro.exe ]; then
+          cp release/BandagePro.exe BandagePro-Windows/
+        elif [ -f BandagePro.exe ]; then
+          cp BandagePro.exe BandagePro-Windows/
         fi
-        cp build_scripts/sample_LastGraph Bandage-Windows/ || true
+        cp build_scripts/sample_LastGraph BandagePro-Windows/ || true
 
         # Copy Qt DLLs manually
         QTDIR="C:/Qt/5.15.2/msvc2019_64"
         if [ -d "$QTDIR" ]; then
-          cp "$QTDIR/bin/Qt5Core.dll" Bandage-Windows/ || true
-          cp "$QTDIR/bin/Qt5Gui.dll" Bandage-Windows/ || true
-          cp "$QTDIR/bin/Qt5Widgets.dll" Bandage-Windows/ || true
-          cp "$QTDIR/bin/Qt5Svg.dll" Bandage-Windows/ || true
+          cp "$QTDIR/bin/Qt5Core.dll" BandagePro-Windows/ || true
+          cp "$QTDIR/bin/Qt5Gui.dll" BandagePro-Windows/ || true
+          cp "$QTDIR/bin/Qt5Widgets.dll" BandagePro-Windows/ || true
+          cp "$QTDIR/bin/Qt5Svg.dll" BandagePro-Windows/ || true
         fi
 
-        cd Bandage-Windows
-        7z a ../Bandage-Windows-x86_64.zip *
+        cd BandagePro-Windows
+        7z a ../BandagePro-Windows-x86_64.zip *
 
     - name: Upload Windows artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Bandage-Windows
-        path: Bandage-Windows-x86_64.zip
+        name: BandagePro-Windows
+        path: BandagePro-Windows-x86_64.zip

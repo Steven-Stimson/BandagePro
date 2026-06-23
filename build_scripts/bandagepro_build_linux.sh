@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # This is the script I use on my Ubuntu and CentOS virtual machines to build the public release of
-# Bandage. It produces an app bundle ready for deployment. It requires that the 'sample_LastGraph'
+# BandagePro. It produces an app bundle ready for deployment. It requires that the 'sample_LastGraph'
 # and 'dependencies' files are in the current directory.
 
-# This script will by default build Bandage twice: once as a statically-linked executable and once
+# This script will by default build BandagePro twice: once as a statically-linked executable and once
 # as a dynamically-linked executable. If the user passes -s or -d, then it will build only the
 # static or dynamic variety, respectively. The two different varieties use two separate versions of
 # Qt. The dynamic version uses an older Qt version, as this will be compatible with more Linux
@@ -37,7 +37,7 @@ if [ ! -d "Bandage" ]; then
   git clone https://github.com/rrwick/Bandage
 fi
 
-# Get the Bandage version number from the main.cpp file and replace its dots with underscores.
+# Get the version number from the main.cpp file and replace its dots with underscores.
 VERSION_LINE=$(grep "setApplicationVersion" Bandage/program/main.cpp)
 IFS='"' read -ra ADDR <<< "$VERSION_LINE"
 VERSION="${ADDR[1]}"
@@ -58,10 +58,10 @@ fi
 if [ -z "$DISTRO" ]; then
   DISTRO="Linux"
 fi
-BASE_ZIP_NAME="Bandage_$DISTRO"
+BASE_ZIP_NAME="BandagePro_$DISTRO"
 
 if $STATIC_BUILD; then
-  # Build the statically-linked version of Bandage.
+  # Build the statically-linked version of BandagePro.
   cp -r Bandage/ Bandage-static/
   cd Bandage-static/
   $STATIC_QMAKE Bandage.pro
@@ -69,7 +69,7 @@ if $STATIC_BUILD; then
   chmod +x Bandage
   cd ..
 
-  # Zip static Bandage
+  # Zip static BandagePro
   STATIC_ZIP=$BASE_ZIP_NAME
   STATIC_ZIP+="_static_v$VERSION.zip"
   zip -j $STATIC_ZIP Bandage-static/Bandage
@@ -78,7 +78,7 @@ if $STATIC_BUILD; then
 fi
 
 if $DYNAMIC_BUILD; then
-  # Build the dynamically-linked version of Bandage.
+  # Build the dynamically-linked version of BandagePro.
   cp -r Bandage/ Bandage-dynamic/
   cd Bandage-dynamic/
   $DYNAMIC_QMAKE Bandage.pro
@@ -86,7 +86,7 @@ if $DYNAMIC_BUILD; then
   chmod +x Bandage
   cd ..
 
-  # Zip dynamic Bandage
+  # Zip dynamic BandagePro
   DYNAMIC_ZIP=$BASE_ZIP_NAME
   DYNAMIC_ZIP+="_dynamic_v$VERSION.zip"
   zip -j $DYNAMIC_ZIP Bandage-dynamic/Bandage

@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandageProPro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandageProPro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandageProPro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandageProPro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "settingsdialog.h"
@@ -304,8 +304,8 @@ void SettingsDialog::setInfoTexts()
                                                 "Low values are faster and recommended for big assembly graphs. Higher values may result in smoother, more pleasing layouts.<br><br>"
                                                 "The graph must be redrawn to see the effect of changing this setting.");
     ui->linearLayoutInfoText->setInfoText("Enable this option if the graph is ordered in a linear fashion, e.g. for a MSA graph.<br><br>"
-                                          "When on, Bandage will sort the nodes by name (numerically or alphabetically) and initialise the graph layout left-to-right, resulting in a more linear layout.<br><br>"
-                                          "This type of layout is automatically used when viewing plain FASTA files in Bandage.");
+                                          "When on, BandagePro will sort the nodes by name (numerically or alphabetically) and initialise the graph layout left-to-right, resulting in a more linear layout.<br><br>"
+                                          "This type of layout is automatically used when viewing plain FASTA files in BandagePro.");
 
     ui->depthPowerInfoText->setInfoText("This is the power used in the function for determining node widths.");
     ui->depthEffectOnWidthInfoText->setInfoText("This controls the degree to which a node's depth affects its width.<br><br>"
@@ -318,12 +318,12 @@ void SettingsDialog::setInfoTexts()
                                           "When 'On node centre' is selected, node labels will always be displayed at the centre of each node, regardless of the view's position.");
 
     ui->antialiasingInfoText->setInfoText("Antialiasing makes the display smoother and more pleasing. Disable antialiasing if you are experiencing slow performance when viewing large graphs.");
-    ui->singleNodeArrowHeadsInfoText->setInfoText("When on, this will draw nodes with arrowheads, even when Bandage is in single node style.<br><br>"
+    ui->singleNodeArrowHeadsInfoText->setInfoText("When on, this will draw nodes with arrowheads, even when BandagePro is in single node style.<br><br>"
                                                   "This makes sense for graphs where the positive-negative distinction is meaningful, e.g. a MSA graph of gene sequences where the positive nodes are the coding strands. It does not make sense for graphs where the positive-negative distinction is arbitrary, e.g. a SPAdes assembly graph.");
 
-    ui->uniformPositiveNodeColourInfoText->setInfoText("This is the colour of all positive nodes when Bandage is set to the 'Uniform colour' option.");
-    ui->uniformNegativeNodeColourInfoText->setInfoText("This is the colour of all negative nodes when Bandage is set to the 'Uniform colour' option. Negative nodes are only displayed when the graph is drawn in 'Double' mode.");
-    ui->uniformNodeSpecialColourInfoText->setInfoText("When Bandage is set to the 'Uniform colour' option, this colour is used for limited graph scopes:<ul>"
+    ui->uniformPositiveNodeColourInfoText->setInfoText("This is the colour of all positive nodes when BandagePro is set to the 'Uniform colour' option.");
+    ui->uniformNegativeNodeColourInfoText->setInfoText("This is the colour of all negative nodes when BandagePro is set to the 'Uniform colour' option. Negative nodes are only displayed when the graph is drawn in 'Double' mode.");
+    ui->uniformNodeSpecialColourInfoText->setInfoText("When BandagePro is set to the 'Uniform colour' option, this colour is used for limited graph scopes:<ul>"
                                                       "<li>When the graph scope is set to 'Around node(s)', this colour is used for the user-specified nodes.</li>"
                                                       "<li>When the graph scope is set to 'Around BLAST hit(s)', this colour is used for nodes that contain at least one BLAST hit.</li></ul>");
     ui->edgeColourInfoText->setInfoText("This colour is used for all edges connecting nodes.");
@@ -348,13 +348,13 @@ void SettingsDialog::setInfoTexts()
                                                          "Set to the minimum value for fully transparent nodes. Set to the maximum value for completely opaque nodes.<br><br>"
                                                          "Note that negative nodes are only visible when the graph is drawn in double mode.");
 
-    ui->lowDepthColourInfoText->setInfoText("When Bandage is set to the 'Colour by depth' option, this colour is used for nodes with depth at or below the low depth value.<br><br>"
+    ui->lowDepthColourInfoText->setInfoText("When BandagePro is set to the 'Colour by depth' option, this colour is used for nodes with depth at or below the low depth value.<br><br>"
                                             "Nodes with depth between the low and high depth values will get an intermediate colour.");
-    ui->highDepthColourInfoText->setInfoText("When Bandage is set to the 'Colour by depth' option, this colour is used for nodes with depth above the high depth value.<br><br>"
+    ui->highDepthColourInfoText->setInfoText("When BandagePro is set to the 'Colour by depth' option, this colour is used for nodes with depth above the high depth value.<br><br>"
                                              "Nodes with depth between the low and high depth values will get an intermediate colour.");
     ui->depthAutoValuesInfoText->setInfoText("When set to 'Auto', the low depth value is set to the first quartile and the high depth value is set to the third quartile.");
     ui->depthManualValuesInfoText->setInfoText("When set to 'Manual', you can specify the values used for depth colouring.");
-    ui->noBlastHitsColourInfoText->setInfoText("When Bandage is set to the 'Colour using BLAST hits' option, this colour is used for nodes that do not have any BLAST hits. It is also used for any region of a node without BLAST hits, even if there are BLAST hits in other regions of that node.");
+    ui->noBlastHitsColourInfoText->setInfoText("When BandagePro is set to the 'Colour using BLAST hits' option, this colour is used for nodes that do not have any BLAST hits. It is also used for any region of a node without BLAST hits, even if there are BLAST hits in other regions of that node.");
     ui->contiguitySearchDepthInfoText->setInfoText("This is the number of steps the contiguity search will take. Larger values will find more distant contiguous nodes, at a performance cost.<br><br>"
                                                    "The time taken to complete the search can grow rapidly as values increase, so use values above 20 with caution.");
     ui->contiguousStrandSpecificColourInfoText->setInfoText("When a contiguity search is conducted, this is the colour given to nodes that are determined to be contiguous with the starting node(s).<br><br>"
@@ -364,7 +364,7 @@ void SettingsDialog::setInfoTexts()
     ui->maybeContiguousColourInfoText->setInfoText("When a contiguity search is conducted, this is the colour given to nodes that are determined to be possibly contiguous with the starting node(s).");
     ui->notContiguousColourInfoText->setInfoText("When a contiguity search is conducted, this is the colour given to nodes that are not determined to be contiguous with the starting node(s).");
     ui->contiguityStartingColourInfoText->setInfoText("When a contiguity search is conducted, this is the colour given to the starting node(s).");
-    ui->maxHitsForQueryPathInfoText->setInfoText("Bandage will not attempt to find query paths for BLAST queries with more hits than this setting. BLAST query path searches can be very slow when there are too many hits, so this setting prevents performance problems.<br><br>"
+    ui->maxHitsForQueryPathInfoText->setInfoText("BandageProPro will not attempt to find query paths for BLAST queries with more hits than this setting. BLAST query path searches can be very slow when there are too many hits, so this setting prevents performance problems.<br><br>"
                                                  "Set to 0 to turn off all BLAST query path finding.<br><br>"
                                                  "Set to a larger value to enable query path searches for BLAST queries with many hits (can be slow).");
     ui->maxPathNodesInfoText->setInfoText("This controls the maximum number of nodes in BLAST query paths.<br><br>"

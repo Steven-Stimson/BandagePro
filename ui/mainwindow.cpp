@@ -1,19 +1,19 @@
 ﻿//Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "mainwindow.h"
@@ -81,7 +81,7 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     srand(time(NULL));
 
     //Make a temp directory to hold the BLAST files.
-    //Since Bandage is running in GUI mode, we make it in the system's
+    //Since BandagePro is running in GUI mode, we make it in the system's
     //temp area - out of the way for the user.
     g_blastSearch->m_tempDirectory = QDir::tempPath() + "/bandage_temp-" + QString::number(QApplication::applicationPid()) + "/";
     if (!QDir().mkdir(g_blastSearch->m_tempDirectory))
@@ -264,7 +264,7 @@ void MainWindow::cleanUp()
 
     g_blastSearch->cleanUp();
     g_assemblyGraph->cleanUp();
-    setWindowTitle("Bandage");
+    setWindowTitle("BandagePro");
 
     g_memory->userSpecifiedPath = Path();
     g_memory->userSpecifiedPathString = "";
@@ -421,11 +421,11 @@ void MainWindow::loadGraph2(GraphFileType graphFileType, QString fullFileName)
                 QMessageBox::warning(this, "Unsupported CIGAR", "This GFA file contains "
                                      "links with complex CIGAR strings (containing "
                                      "operators other than M).\n\n"
-                                     "Bandage does not support edge overlaps that are not "
+                                     "BandagePro does not support edge overlaps that are not "
                                      "perfect, so the behaviour of such edges in this graph "
                                      "is undefined.");
             if (bandageOptionsError.length() > 0)
-                QMessageBox::warning(this, "Bad Bandage options", "This GFA file contains Bandage options but they "
+                QMessageBox::warning(this, "Bad BandagePro options", "This GFA file contains BandagePro options but they "
                                      "were not used because of this error:\n\n" + bandageOptionsError);
 
         }
@@ -435,9 +435,9 @@ void MainWindow::loadGraph2(GraphFileType graphFileType, QString fullFileName)
         {
             int badEdgeCount = g_assemblyGraph->buildDeBruijnGraphFromAsqg(fullFileName);
             if (badEdgeCount > 0)
-                QMessageBox::warning(this, "Edges not loaded", "Bandage could not load " +
+                QMessageBox::warning(this, "Edges not loaded", "BandagePro could not load " +
                                      QString::number(badEdgeCount) + " edges in this file "
-                                     "because they have an abnormal overlap.\n\nBandage can "
+                                     "because they have an abnormal overlap.\n\nBandagePro can "
                                      "only handle edges with an exact overlap at the "
                                      "start/end of node sequences.");
         }
@@ -445,7 +445,7 @@ void MainWindow::loadGraph2(GraphFileType graphFileType, QString fullFileName)
             g_assemblyGraph->buildDeBruijnGraphFromPlainFasta(fullFileName);
 
         setUiState(GRAPH_LOADED);
-        setWindowTitle("Bandage - " + fullFileName);
+        setWindowTitle("BandagePro - " + fullFileName);
 
         g_assemblyGraph->determineGraphInfo();
         displayGraphDetails();
@@ -1697,13 +1697,13 @@ void MainWindow::setInfoTexts()
                                        "resource-intensive for large graphs.<br><br>"
                                        "The layout algorithm uses a random seed, so each time this button is "
                                        "clicked you will give different layouts of the same graph.");
-    ui->zoomInfoText->setInfoText("This value controls how large the graph appears in Bandage. The zoom level "
+    ui->zoomInfoText->setInfoText("This value controls how large the graph appears in BandagePro. The zoom level "
                                   "can also be changed by:<ul>"
                                   "<li>Holding the " + control + " key and using the mouse wheel over the graph.</li>"
                                   "<li>Clicking on the graph display and then using the '+' and '-' keys.</li></ul>");
     ui->nodeWidthInfoText->setInfoText("This is the average width for each node. The exact width for each node is "
                                        "also influenced by the node's depth. The effect of depth on width "
-                                       "can be adjusted in Bandage " + settingsDialogTitle + ".");
+                                       "can be adjusted in BandagePro " + settingsDialogTitle + ".");
     ui->nodeColourInfoText->setInfoText("This controls the colour of the nodes in the graph:<ul>"
                                         "<li>'Random colours': Nodes will be coloured randomly. Each time this is "
                                         "selected, new random colours will be chosen. Negative nodes (visible "
@@ -1716,7 +1716,7 @@ void MainWindow::setInfoTexts()
                                         "will be drawn in a separate colour.</li>"
                                         "<li>'Colour by depth': Node colours will be defined by their "
                                         "depth. The details of this relationship are configurable in "
-                                        "Bandage " + settingsDialogTitle + ".</li>"
+                                        "BandagePro " + settingsDialogTitle + ".</li>"
                                         "<li>'BLAST hits (rainbow)': Nodes will be drawn in a light grey colour "
                                         "and BLAST hits for the currently selected query will be drawn using a "
                                         "rainbow. Red indicates the start of the query sequence and violet "
@@ -1731,9 +1731,9 @@ void MainWindow::setInfoTexts()
                                         "<li>'Custom colours': Nodes will be coloured using colours of your "
                                         "choice. Select one or more nodes and then click the 'Set colour' button "
                                         "to define their colour.</li></ul>"
-                                        "See the 'Colours' section of the Bandage " + settingsDialogTitle + " "
+                                        "See the 'Colours' section of the BandagePro " + settingsDialogTitle + " "
                                         "to control various colouring options.");
-    ui->contiguityInfoText->setInfoText("Select one or more nodes and then click this button. Bandage will "
+    ui->contiguityInfoText->setInfoText("Select one or more nodes and then click this button. BandagePro will "
                                         "then colour which other nodes in the graph are likely to be contiguous "
                                         "with your selected node(s).");
     ui->nodeLabelsInfoText->setInfoText("Tick any of the node labelling options to display those labels over "
@@ -1749,11 +1749,11 @@ void MainWindow::setInfoTexts()
                                         "custom labels in subsequent columns. The CSV file must also contain a "
                                         "header row.");
     ui->nodeFontInfoText->setInfoText("Click the 'Font' button to choose the font used for node labels. The "
-                                      "colour of the font is configurable in Bandage's " + settingsDialogTitle + ".<br><br>"
+                                      "colour of the font is configurable in BandagePro's " + settingsDialogTitle + ".<br><br>"
                                       "Ticking 'Text outline' will surround the text with a white outline. "
                                       "This can help to make text more readable, but will obscure more of the "
                                       "underlying graph. The thickness of the text outline is configurable in "
-                                      "Bandage's " + settingsDialogTitle + ".");
+                                      "BandagePro's " + settingsDialogTitle + ".");
     ui->blastSearchInfoText->setInfoText("Click this button to open a dialog where a BLAST search for one "
                                          "or more queries can be carried out on the graph's nodes.<br><br>"
                                          "After a BLAST search is complete, it will be possible to use the "
@@ -2284,7 +2284,7 @@ void MainWindow::saveEntireGraphToGfa()
         g_memory->rememberedPath = QFileInfo(fullFileName).absolutePath();
         bool success = g_assemblyGraph->saveEntireGraphToGfa(fullFileName);
         if (!success)
-            QMessageBox::warning(this, "Error saving file", "Bandage was unable to save the graph file.");
+            QMessageBox::warning(this, "Error saving file", "BandagePro was unable to save the graph file.");
     }
 }
 
@@ -2298,7 +2298,7 @@ void MainWindow::saveVisibleGraphToGfa()
         g_memory->rememberedPath = QFileInfo(fullFileName).absolutePath();
         bool success = g_assemblyGraph->saveVisibleGraphToGfa(fullFileName);
         if (!success)
-            QMessageBox::warning(this, "Error saving file", "Bandage was unable to save the graph file.");
+            QMessageBox::warning(this, "Error saving file", "BandagePro was unable to save the graph file.");
     }
 }
 
@@ -2327,7 +2327,7 @@ void MainWindow::webBlastSelectedNodes()
     else
     {
         QMessageBox::information(this, "Long sequences", "The selected node sequences are too long to pass to the BLAST web "
-                                                         "interface via the URL.  Bandage has put them in your clipboard so "
+                                                         "interface via the URL.  BandagePro has put them in your clipboard so "
                                                          "you can paste them in.");
         QClipboard * clipboard = QApplication::clipboard();
         clipboard->setText(selectedNodesFasta);

@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "reduce.h"
@@ -57,7 +57,7 @@ int bandageReduce(QStringList arguments)
 
     if (!checkIfFileExists(inputFilename))
     {
-        outputText("Bandage error: " + inputFilename + " does not exist", &err);
+        outputText("BandagePro error: " + inputFilename + " does not exist", &err);
         return 1;
     }
 
@@ -69,14 +69,14 @@ int bandageReduce(QStringList arguments)
     QString error = checkForInvalidReduceOptions(arguments);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 
     bool loadSuccess = g_assemblyGraph->loadGraphFromFile(inputFilename);
     if (!loadSuccess)
     {
-        outputText("Bandage error: could not load " + inputFilename, &err);
+        outputText("BandagePro error: could not load " + inputFilename, &err);
         return 1;
     }
 
@@ -118,7 +118,7 @@ int bandageReduce(QStringList arguments)
     bool success = g_assemblyGraph->saveVisibleGraphToGfa(outputFilename);
     if (!success)
     {
-        err << "Bandage was unable to save the graph file." << Qt::endl;
+        err << "BandagePro was unable to save the graph file." << Qt::endl;
         return 1;
     }
 
@@ -131,14 +131,14 @@ void printReduceUsage(QTextStream * out, bool all)
 {
     QStringList text;
 
-    text << "Bandage reduce takes an input graph and saves a reduced subgraph using the graph scope settings. The saved graph will be in GFA format.";
+    text << "BandagePro reduce takes an input graph and saves a reduced subgraph using the graph scope settings. The saved graph will be in GFA format.";
     text << "";
     text << "If a graph scope is not specified, then the 'entire' scope will be used, in which case this will simply convert the input graph to GFA format.";
     text << "";
-    text << "Usage:    Bandage reduce <inputgraph> <outputgraph> [options]";
+    text << "Usage:    BandagePro reduce <inputgraph> <outputgraph> [options]";
     text << "";
     text << "Positional parameters:";
-    text << "<inputgraph>        A graph file of any type supported by Bandage";
+    text << "<inputgraph>        A graph file of any type supported by BandagePro";
     text << "<outputgraph>       The filename for the GFA graph to be made (if it does not end in '.gfa', that extension will be added)";
     text << "";
 

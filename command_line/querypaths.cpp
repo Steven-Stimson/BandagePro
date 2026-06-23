@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "querypaths.h"
@@ -50,7 +50,7 @@ int bandageQueryPaths(QStringList arguments)
     arguments.pop_front();
     if (!checkIfFileExists(graphFilename))
     {
-        outputText("Bandage error: " + graphFilename, &err);
+        outputText("BandagePro error: " + graphFilename, &err);
         return 1;
     }
 
@@ -58,7 +58,7 @@ int bandageQueryPaths(QStringList arguments)
     arguments.pop_front();
     if (!checkIfFileExists(queriesFilename))
     {
-        outputText("Bandage error: " + queriesFilename, &err);
+        outputText("BandagePro error: " + queriesFilename, &err);
         return 1;
     }
     g_settings->blastQueryFilename = queriesFilename;
@@ -67,7 +67,7 @@ int bandageQueryPaths(QStringList arguments)
     //queries file that is a positional argument.
     if (isOptionPresent("--query", &arguments))
     {
-        err << "Bandage error: the --query option cannot be used with Bandage querypaths." << Qt::endl;
+        err << "BandagePro error: the --query option cannot be used with BandagePro querypaths." << Qt::endl;
         return 1;
     }
 
@@ -80,7 +80,7 @@ int bandageQueryPaths(QStringList arguments)
     QString error = checkForInvalidQueryPathsOptions(arguments);
     if (error.length() > 0)
     {
-        outputText("Bandage error: " + error, &err);
+        outputText("BandagePro error: " + error, &err);
         return 1;
     }
 
@@ -94,17 +94,17 @@ int bandageQueryPaths(QStringList arguments)
     QFile hitsFile(hitsFastaFilename);
     if (tableFile.exists())
     {
-        outputText("Bandage error: " + tableFilename + " already exists.", &err);
+        outputText("BandagePro error: " + tableFilename + " already exists.", &err);
         return 1;
     }
     if (pathFasta && pathsFile.exists())
     {
-        outputText("Bandage error: " + pathFastaFilename + " already exists.", &err);
+        outputText("BandagePro error: " + pathFastaFilename + " already exists.", &err);
         return 1;
     }
     if (hitsFasta && hitsFile.exists())
     {
-        outputText("Bandage error: " + hitsFastaFilename + " already exists.", &err);
+        outputText("BandagePro error: " + hitsFastaFilename + " already exists.", &err);
         return 1;
     }
 
@@ -270,12 +270,12 @@ void printQueryPathsUsage(QTextStream * out, bool all)
 {
     QStringList text;
 
-    text << "Bandage querypaths searches for queries in the graph using BLAST and outputs the results to a tab-delimited file.";
+    text << "BandagePro querypaths searches for queries in the graph using BLAST and outputs the results to a tab-delimited file.";
     text << "";
-    text << "Usage:    Bandage querypaths <graph> <queries> <output_prefix> [options]";
+    text << "Usage:    BandagePro querypaths <graph> <queries> <output_prefix> [options]";
     text << "";
     text << "Positional parameters:";
-    text << "<graph>             A graph file of any type supported by Bandage";
+    text << "<graph>             A graph file of any type supported by BandagePro";
     text << "<queries>           A FASTA file of one or more BLAST queries";
     text << "<output_prefix>     The output file prefix (used to create the '.tsv' output file, and possibly FASTA files as well, depending on options)";
     text << "";

@@ -171,7 +171,7 @@ void GraphInfoDialog::setInfoTexts()
                                                      "less than the total length of the underlying sequence. This is "
                                                      "because a sequence which occurs multiple times may assemble into "
                                                      "a single node.<br><br>"
-                                                     "To account for this, Bandage estimates sequence length by using "
+                                                     "To account for this, BandagePro estimates sequence length by using "
                                                      "median depth to assign a copy number count to each node. "
                                                      "The node lengths are then multipled by this copy number and "
                                                      "totalled (with any overlap sequences removed).<br><br>"

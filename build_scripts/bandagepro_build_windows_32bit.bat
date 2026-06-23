@@ -1,19 +1,19 @@
 echo off
 
-rem This is the script I use on my Windows 7 virtual machine to build the public release of Bandage.
-rem Bandage. It produces a directory ready for deployment. It requires that sample_LastGraph is in
+rem This is the script I use on my Windows 7 virtual machine to build the public release of BandagePro.
+rem BandagePro. It produces a directory ready for deployment. It requires that sample_LastGraph is in
 rem the current directory.
 
 rem These variables must be set to the correct paths and values for your system.
 set QT_PATH=C:\Qt\5.6
-set MSVC_PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0
-set MSVC_VERSION=msvc2015_64
+set MSVC_PATH=C:\Program Files\Microsoft Visual Studio 14.0
+set MSVC_VERSION=msvc2015
 set MSVC_VERSION_NUM=140
 set GIT_PATH=C:\Program Files\Git\bin\git
 set ZIP_PATH=C:\Program Files\7-Zip\7z.exe
 
 rem Set up the MSVC compiler.
-call "%MSVC_PATH%\VC\vcvarsall.bat" x86_amd64
+call "%MSVC_PATH%\VC\vcvarsall.bat" x86
 
 rem If a 'Bandage' directory already exists, then this script will use assume it is the Bandage
 rem source code and use it. If not, it will clone the master branch from GitHub.
@@ -23,7 +23,7 @@ call "%QT_PATH%\%MSVC_VERSION%\bin\qmake.exe"
 call "%QT_PATH%\..\Tools\QtCreator\bin\jom.exe"
 call cd ..
 
-rem Get the Bandage version number from the main.cpp file and replace its dots with underscores.
+rem Get the version number from the main.cpp file and replace its dots with underscores.
 for /f %%i in ('findstr setApplicationVersion Bandage\program\main.cpp') do set VERSION_LINE=%%i
 set VERSION_LINE=%VERSION_LINE:.=_%
 set VERSION_LINE=%VERSION_LINE:"=;%
@@ -35,9 +35,9 @@ call rmdir Bandage\ /S /Q
 call mkdir Bandage\
 call move Bandage.exe Bandage\Bandage.exe
 
-rem Add the necessary libraries so Bandage can be deployed.
+rem Add the necessary libraries so BandagePro can be deployed.
 call "%QT_PATH%\%MSVC_VERSION%\bin\windeployqt.exe" Bandage\Bandage.exe
 
-rem Zip Bandage with the sample graph and clean up.
-call "%ZIP_PATH%" a -tzip Bandage_Windows_v%VERSION%.zip Bandage\ sample_LastGraph installation.txt
+rem Zip BandagePro with the sample graph and clean up.
+call "%ZIP_PATH%" a -tzip BandagePro_Windows_32bit_v%VERSION%.zip Bandage\ sample_LastGraph installation.txt
 call rmdir Bandage\ /S /Q

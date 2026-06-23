@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "commoncommandlinefunctions.h"
@@ -45,7 +45,7 @@ void getSettingsUsage(QStringList * text)
     for (int i = 0; i < g_memory->terminalWidth - 10; ++i)
         dashes += '-';
 
-    *text << "Settings: The following options configure the Bandage settings that are available in the Bandage GUI.";
+    *text << "Settings: The following options configure the BandagePro settings that are available in the BandagePro GUI.";
     *text << "";
     *text << "Colours can be specified using hex values, with or without an alpha channel, (e.g. #FFB6C1 or #7FD2B48C) or using standard colour names (e.g. red, yellowgreen or skyblue).  Note that hex colours will either need to be enclosed in quotes (e.g. \"#FFB6C1\") or have the hash symbol escaped (e.g. \\#FFB6C1).";
     *text << "";
@@ -138,7 +138,7 @@ void getSettingsUsage(QStringList * text)
     *text << "BLAST search";
     *text << dashes;
     *text << "--query <fastafile> A FASTA file of either nucleotide or protein sequences to be used as BLAST queries (default: none)";
-    *text << "--blastp <param>    Parameters to be used by blastn and tblastn when conducting a BLAST search in Bandage (default: none). Format BLAST parameters exactly as they would be used for blastn/tblastn on the command line, and enclose them in quotes.";
+    *text << "--blastp <param>    Parameters to be used by blastn and tblastn when conducting a BLAST search in BandagePro (default: none). Format BLAST parameters exactly as they would be used for blastn/tblastn on the command line, and enclose them in quotes.";
     *text << "--alfilter <int>    Alignment length filter for BLAST hits. Hits with shorter alignments will be excluded " + getRangeAndDefault(g_settings->blastAlignmentLengthFilter);
     *text << "--qcfilter <float>  Query coverage filter for BLAST hits. Hits with less coverage will be excluded " + getRangeAndDefault(g_settings->blastQueryCoverageFilter);
     *text << "--ifilter <float>   Identity filter for BLAST hits. Hits with less identity will be excluded " + getRangeAndDefault(g_settings->blastIdentityFilter);
@@ -147,7 +147,7 @@ void getSettingsUsage(QStringList * text)
     *text << "";
     *text << "BLAST query paths";
     *text << dashes;
-    *text << "These settings control how Bandage searches for query paths after conducting a BLAST search.";
+    *text << "These settings control how BandagePro searches for query paths after conducting a BLAST search.";
     *text << "--pathnodes <int>   The number of allowed nodes in a BLAST query path " + getRangeAndDefault(g_settings->maxQueryPathNodes);
     *text << "--minpatcov <float> Minimum fraction of a BLAST query which must be covered by a query path " + getRangeAndDefault(g_settings->minQueryCoveredByPath);
     *text << "--minhitcov <float> Minimum fraction of a BLAST query which must be covered by BLAST hits in a query path " + getRangeAndDefault(g_settings->minQueryCoveredByHits);
@@ -208,7 +208,7 @@ void outputText(QStringList text, QTextStream * out)
 }
 
 
-//This is in a separate function because the command line tool Bandage reduce
+//This is in a separate function because the command line tool BandagePro reduce
 //also displays these.
 void getGraphScopeOptions(QStringList * text)
 {
@@ -221,7 +221,7 @@ void getGraphScopeOptions(QStringList * text)
 }
 
 
-//This function checks the values of the Bandage settings.
+//This function checks the values of the BandagePro settings.
 //If everything is fine, it removes the good arguments/values and returns
 //a null string.  If there's a problem, it returns an error message.
 QString checkForInvalidOrExcessSettings(QStringList * arguments)
@@ -238,7 +238,7 @@ QString checkForInvalidOrExcessSettings(QStringList * arguments)
     error = checkOptionForInt("--distance", arguments, g_settings->nodeDistance, false); if (error.length() > 0) return error;
     error = checkOptionForFloat("--mindepth", arguments, g_settings->minDepthRange, false); if (error.length() > 0) return error;
     error = checkOptionForFloat("--maxdepth", arguments, g_settings->maxDepthRange, false); if (error.length() > 0) return error;
-    if (isOptionPresent("--query", arguments) && g_memory->commandLineCommand == NO_COMMAND) return "A graph must be given (e.g. via Bandage load) to use the --query option";
+    if (isOptionPresent("--query", arguments) && g_memory->commandLineCommand == NO_COMMAND) return "A graph must be given (e.g. via BandagePro load) to use the --query option";
     error = checkOptionForFile("--query", arguments); if (error.length() > 0) return error;
     error = checkOptionForString("--blastp", arguments, QStringList(), "blastn/tblastn parameters"); if (error.length() > 0) return error;
     checkOptionWithoutValue("--double", arguments);
@@ -1140,7 +1140,7 @@ void getCommonHelp(QStringList * text)
 {
     *text << "--help              View this help message";
     *text << "--helpall           View all command line settings";
-    *text << "--version           View Bandage version number";
+    *text << "--version           View BandagePro version number";
     *text << "";
 }
 
@@ -1256,9 +1256,16 @@ QString getDefaultColour(QColor colour)
     return "(default: " + getColourName(colour.name()) + ")";
 }
 
-QString getBandageTitleAsciiArt()
+QString getBandageProTitleAsciiArt()
 {
-    return "  ____                  _                  \n |  _ \\                | |                 \n | |_) | __ _ _ __   __| | __ _  __ _  ___ \n |  _ < / _` | '_ \\ / _` |/ _` |/ _` |/ _ \\\n | |_) | (_| | | | | (_| | (_| | (_| |  __/\n |____/ \\__,_|_| |_|\\__,_|\\__,_|\\__, |\\___|\n                                 __/ |     \n                                |___/      ";
+    return "  ____                  _                    ____            _       \n"
+           " |  _ \\                | |                  |  _ \\ _ __ ___ | | ___  \n"
+           " | |_) | __ _ _ __   __| | __ _  __ _  ___  | |_) | '__/ _ \\| |/ _ \\ \n"
+           " |  _ < / _` | '_ \\ / _` |/ _` |/ _` |/ _ \\ |  __/| | | (_) | | (_) |\n"
+           " | |_) | (_| | | | | (_| | (_| | (_| |  __/ | |   |_|  \\___/|_|\\___/ \n"
+           " |____/ \\__,_|_| |_|\\__,_|\\__,_|\\__, |\\___| |_|                      \n"
+           "                                 __/ |                                \n"
+           "                                |___/                                 ";
 }
 
 bool isOption(QString text)
@@ -1297,12 +1304,12 @@ bool isCommand(QString text)
 
 bool isError(QString text)
 {
-    return text.startsWith("Bandage error");
+    return text.startsWith("BandagePro error");
 }
 
 void getOnlineHelpMessage(QStringList * text)
 {
-    *text << "Online Bandage help: https://github.com/rrwick/Bandage/wiki";
+    *text << "Online BandagePro help: https://github.com/rrwick/BandagePro/wiki";
     *text << "";
 }
 

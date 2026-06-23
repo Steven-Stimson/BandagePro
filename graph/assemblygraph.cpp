@@ -1,19 +1,19 @@
 //Copyright 2017 Ryan Wick
 
-//This file is part of Bandage
+//This file is part of BandagePro
 
-//Bandage is free software: you can redistribute it and/or modify
+//BandagePro is free software: you can redistribute it and/or modify
 //it under the terms of the GNU General Public License as published by
 //the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
 
-//Bandage is distributed in the hope that it will be useful,
+//BandagePro is distributed in the hope that it will be useful,
 //but WITHOUT ANY WARRANTY; without even the implied warranty of
 //MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //GNU General Public License for more details.
 
 //You should have received a copy of the GNU General Public License
-//along with Bandage.  If not, see <http://www.gnu.org/licenses/>.
+//along with BandagePro.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "assemblygraph.h"
@@ -525,8 +525,8 @@ void AssemblyGraph::buildDeBruijnGraphFromLastGraph(QString fullFileName)
                 if (arcDetails.size() < 3)
                     throw "load error";
 
-                QString node1Name = convertNormalNumberStringToBandageNodeName(arcDetails.at(1));
-                QString node2Name = convertNormalNumberStringToBandageNodeName(arcDetails.at(2));
+                QString node1Name = convertNormalNumberStringToBandageProNodeName(arcDetails.at(1));
+                QString node2Name = convertNormalNumberStringToBandageProNodeName(arcDetails.at(2));
 
                 createDeBruijnEdge(node1Name, node2Name);
             }
@@ -546,8 +546,8 @@ void AssemblyGraph::buildDeBruijnGraphFromLastGraph(QString fullFileName)
 
 
 //This function takes a normal number string like "5" or "-6" and changes
-//it to "5+" or "6-" - the format of Bandage node names.
-QString AssemblyGraph::convertNormalNumberStringToBandageNodeName(QString number)
+//it to "5+" or "6-" - the format of BandagePro node names.
+QString AssemblyGraph::convertNormalNumberStringToBandageProNodeName(QString number)
 {
     if (number.at(0) == '-')
     {
@@ -596,7 +596,7 @@ void AssemblyGraph::buildDeBruijnGraphFromGfa(QString fullFileName, bool *unsupp
             //Lines beginning with "H" are header lines.
             if (lineParts.at(0) == "H") {
 
-                // Check for a tag containing Bandage options.
+                // Check for a tag containing BandagePro options.
                 for (int i = 1; i < lineParts.size(); ++i) {
                     QString part = lineParts.at(i);
                     if (part.size() < 6)
@@ -892,7 +892,7 @@ int AssemblyGraph::getLengthFromSimpleCigar(QString cigar)
 
 //This function returns the length defined by a cigar string, relative to the
 //second sequence in the edge (the CIGAR reference).
-//Bandage does not fully support non-M CIGAR strings, so this is fairly crude
+//BandagePro does not fully support non-M CIGAR strings, so this is fairly crude
 //at the moment.
 int AssemblyGraph::getLengthFromCigar(QString cigar)
 {
@@ -1216,7 +1216,7 @@ void AssemblyGraph::buildDeBruijnGraphFromTrinityFasta(QString fullFileName)
         }
     }
 
-    //Even though the Trinity.fasta file only contains positive nodes, Bandage
+    //Even though the Trinity.fasta file only contains positive nodes, BandagePro
     //expects negative reverse complements nodes, so make them now.
     QMapIterator<QString, DeBruijnNode*> i(m_deBruijnGraphNodes);
     while (i.hasNext())
@@ -1244,7 +1244,7 @@ void AssemblyGraph::buildDeBruijnGraphFromTrinityFasta(QString fullFileName)
 
 
 
-//This function builds a graph from an ASQG file.  Bandage expects edges to
+//This function builds a graph from an ASQG file.  BandagePro expects edges to
 //conform to its expectation: overlaps are only at the ends of sequences and
 //always have the same length in each of the two sequences.  It will not load
 //edges which fail to meet this expectation.  The function's return value is
@@ -1474,7 +1474,7 @@ void AssemblyGraph::buildDeBruijnGraphFromPlainFasta(QString fullFileName)
 
 
 
-//This function adjusts a node name to make sure it is valid for use in Bandage.
+//This function adjusts a node name to make sure it is valid for use in BandagePro.
 QString AssemblyGraph::cleanNodeName(QString name)
 {
     //Replace whitespace with underscores
@@ -1705,7 +1705,7 @@ bool AssemblyGraph::loadCSV(QString filename, QStringList * columns, QString * e
 
 
 //This function extracts a node name from a string.
-//The string may be in this Bandage format:
+//The string may be in this BandagePro format:
 //        NODE_6+_length_50434_cov_42.3615
 //Or in a number of variations of that format.
 //If the node name it finds does not end in a '+' or '-', it will add '+'.
@@ -1728,7 +1728,7 @@ QString AssemblyGraph::getNodeNameFromString(QString string)
 
     QString nodeName;
 
-    //This checks for the standard Bandage format where the node name does
+    //This checks for the standard BandagePro format where the node name does
     //not have any underscores.
     if (parts.size() == 5 && parts[1] == "length")
         nodeName = parts[0];
