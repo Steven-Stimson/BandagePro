@@ -25,7 +25,7 @@ BandagePro++ is a GUI program that allows users to interact with the assembly gr
 
 ## Pre-built binaries
 
-Pre-built Linux and Mac binaries are available from [Releases](https://github.com/asl/BandagePro/releases) page.
+Pre-built Linux and Mac binaries are available from [Releases](https://github.com/Steven-Stimson/BandagePro/releases) page.
 
 ## Building from source
 
