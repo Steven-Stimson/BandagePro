@@ -20,19 +20,7 @@ BandagePro++ significantly extends the original Bandage experience with a focus 
 
 ## Pre-built binaries
 
-Pre-built Linux and Mac binaries are available from [Releases](https://github.com/Steven-Stimson/BandagePro/releases) page.
-
-## Building from source
-
-### CMake
-```shell
-git clone https://github.com/Steven-Stimson/BandagePro.git
-cd BandagePro
-mkdir build
-cd build
-cmake ..
-make
-```
+Pre-built Linux and Mac binaries are available from [Releases](https://github.com/Steven-Stimson/Pathfinder/releases) page.
 
 ## Contributing
 
