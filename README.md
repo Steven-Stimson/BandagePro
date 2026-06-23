@@ -7,7 +7,7 @@
 
 ## IMPORTANT
 
-**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability. As an active evolution of the original project, it may contain new features and new bugs, and may not be fully compatible with the original Bandage. Documentation and instructions are still being expanded and may be incomplete.
+**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
 
 ## What's New
 
