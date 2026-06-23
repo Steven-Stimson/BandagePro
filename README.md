@@ -8,8 +8,12 @@
 ### v0.1
 BandagePro++ significantly extends the original Bandage experience with a focus on interactive graph manipulation:
 
-* **Undo / Redo support** — Experiment freely with graph edits; any change can be reverted and re-applied.
-* **Enhanced graph editing** — Improved tools for manipulating and refining assembly graphs directly within the visualizer.
+- **Full Undo/Redo Stack**: Multi-level undo/redo for all graph operations
+- **Keyboard Shortcuts**: 
+  - `Ctrl+Z` - Undo
+  - `Ctrl+Shift+Z` - Redo
+- **Menu Integration**: Undo/Redo actions in the Manipulate menu
+- **Improved Graph Manipulation**: Enhanced tools for manipulating and refining assembly graphs directly within the visualizer
 
 ## Prerequisites (for building from the source code)
   * Qt 6
