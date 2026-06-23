@@ -2,7 +2,7 @@
 
 ## IMPORTANT
 
-**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
+**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage).** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability.
 
 ## What's New
 
@@ -40,17 +40,6 @@ make
 ## Contributing
 
 New contributors are welcome! If you're interested or have ideas, please use Issues section in the repo.
-
-
-## Credits
-
-BandagePro++ makes use of the <a href="http://www.ogdf.net/" target="_blank">OGDF</a> library for performing graph layout algorithms. Big thanks goes out to the OGDF developers for their excellent work!
-
-* <a href="https://github.com/rrwick" target="_blank">Ryan Wick</a> (author of original Bandage)
-* <a href="https://github.com/rchikhi" target="_blank">Rayan Chikhi</a>
-* <a href="https://github.com/epruesse" target="_blank">Elmar Pruesse</a>
-* <a href="https://github.com/wafemand" target="_blank">Andrey Zakharov</a>
-* <a href="https://github.com/asl" target="_blank">Anton Korobeynikov</a>
 
 ## License
 
