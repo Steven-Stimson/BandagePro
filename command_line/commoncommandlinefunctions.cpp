@@ -188,11 +188,11 @@ bool isCommand(const QString& text)
 
 bool isError(const QString& text)
 {
-    return text.startsWith("Bandage-NG error");
+    return text.startsWith("BandagePro++ error");
 }
 
 void getOnlineHelpMessage(QStringList * text)
 {
-    *text << "Online Bandage help: https://github.com/asl/BandageNG/wiki";
+    *text << "Online Bandage help: https://github.com/asl/BandageProPP/wiki";
     *text << "";
 }

@@ -1,7 +1,7 @@
 ﻿// Copyright 2017 Ryan Wick
 // Copyright 2022 Anton Korobeynikov
 
-//This file is part of Bandage-NG
+//This file is part of BandagePro++
 
 // Bandage is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

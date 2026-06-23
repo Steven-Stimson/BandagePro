@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(BandageNG LANGUAGES CXX)
+project(BandageProPP LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -105,7 +105,7 @@ set(PROJECT_VERSION_MINOR "${CMAKE_MATCH_2}")
 set(PROJECT_VERSION_TWEAK "${CMAKE_MATCH_3}")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${PROJECT_VERSION_TWEAK}")
 
-message(STATUS "Building Bandage-NG version ${PROJECT_VERSION}")
+message(STATUS "Building BandagePro++ version ${PROJECT_VERSION}")
 add_compile_definitions(APP_VERSION="${PROJECT_VERSION}")
 
 add_subdirectory(thirdparty)
@@ -158,22 +158,23 @@ target_include_directories(BandageLib PRIVATE ${zstd_SOURCE_DIR}/lib)
 add_library(BandageCLI STATIC ${CLI_SOURCES})
 target_link_libraries(BandageCLI PRIVATE BandageLib CLI11::CLI11 Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg)
 
-add_executable(BandageNG program/main.cpp ${RESOURCES})
-target_link_libraries(BandageNG BandageCLI BandageLib CLI11::CLI11 Qt6::Core Qt6::Widgets Qt6::Concurrent ${bandage_zlib})
+add_executable(BandageProPP program/main.cpp ${RESOURCES})
+target_link_libraries(BandageProPP BandageCLI BandageLib CLI11::CLI11 Qt6::Core Qt6::Widgets Qt6::Concurrent ${bandage_zlib})
+set_target_properties(BandageProPP PROPERTIES OUTPUT_NAME "BandagePro++")
 
 if (APPLE)
-  set_target_properties(BandageNG PROPERTIES
+  set_target_properties(BandageProPP PROPERTIES
         MACOSX_BUNDLE ON
-        MACOSX_BUNDLE_BUNDLE_NAME "BandageNG"
+        MACOSX_BUNDLE_BUNDLE_NAME "BandagePro++"
         MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
-        MACOSX_BUNDLE_GUI_IDENTIFIER "org.bandage-ng.app"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "org.bandagepropp.app"
         MACOSX_BUNDLE_ICON_FILE "application.icns")
   set_source_files_properties(images/application.icns PROPERTIES
         MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
 add_subdirectory(resources)
-install(TARGETS BandageNG
+install(TARGETS BandageProPP
         DESTINATION bin
         COMPONENT main)
 

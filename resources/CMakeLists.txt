@@ -1,5 +1,5 @@
 install(
-    FILES BandageNG.desktop
+    FILES BandageProPP.desktop
     DESTINATION share/applications/
 )
 

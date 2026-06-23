@@ -148,25 +148,25 @@ test_image_width_and_height tmp/test.png 400 500; rm tmp/test.png
 test_all "$bandagepath image inputs/test.fastg tmp/test.png  --width 500 --height 400" 0 "" ""
 test_image_width_and_height tmp/test.png 500 400; rm tmp/test.png
 test_all "$bandagepath image abc.fastg test.png" 105 "" "<graph>: File does not exist: abc.fastg Run with --help or --helpall for more information."
-test_all "$bandagepath image inputs/test.fastg test.abc" 1 "" "Bandage-NG error: the output filename must end in .png, .jpg or .svg"
-test_all "$bandagepath image inputs/test.csv tmp/test.png" 1 "" "Bandage-NG error: could not load inputs/test.csv"
+test_all "$bandagepath image inputs/test.fastg test.abc" 1 "" "BandagePro++ error: the output filename must end in .png, .jpg or .svg"
+test_all "$bandagepath image inputs/test.csv tmp/test.png" 1 "" "BandagePro++ error: could not load inputs/test.csv"
 test_all "$bandagepath image inputs/test.fastg test.png --query abc.fasta" 105 "" "--query: File does not exist: abc.fasta Run with --help or --helpall for more information."
 test_all "$bandagepath image inputs/test_rgfa.gfa test.png --colour gfa" 0 "" ""
 test_all "$bandagepath image inputs/test.gfa test.png --colour gc" 0 "" ""
 
-# BandageNG info tests
+# BandagePro++ info tests
 test_all "$bandagepath info inputs/test.gfa --tsv" 0 "inputs/test.gfa 17 16 60 60 30959 29939 10 29.4118% 1 30959 0 2060 119 2001 2060 2060 2060 532.042 25939" ""
 
-# BandageNG load tests
+# BandagePro++ load tests
 test_all "$bandagepath load abc.fastg" 105 "" "<graph>: File does not exist: abc.fastg Run with --help or --helpall for more information."
 test_all "$bandagepath load inputs/test.fastg --query abc.fasta" 105 "" "--query: File does not exist: abc.fasta Run with --help or --helpall for more information."
 
-# BandageNG help tests
+# BandagePro++ help tests
 test_exit_code "$bandagepath --help" 0
 test_exit_code "$bandagepath --helpall" 0
 test_exit_code "$bandagepath --version" 0
 
-# BandageNG incorrect settings tests
+# BandagePro++ incorrect settings tests
 test_all "$bandagepath --abc" 109 "" "The following argument was not expected: --abc Run with --help or --helpall for more information."
 test_all "$bandagepath --scope" 114 "" "--scope: 1 required SCOPE:value in {entire->0,aroundnodes->1,aroundblast->4,depthrange->5} OR {0,1,4,5} missing Run with --help or --helpall for more information."
 test_all "$bandagepath --scope abc" 105 "" "--scope: Check abc value in {entire->0,aroundnodes->1,aroundblast->4,depthrange->5} OR {0,1,4,5} FAILED Run with --help or --helpall for more information."
@@ -206,8 +206,8 @@ test_all "$bandagepath --ranopaneg" 114 "" "--ranopaneg: 1 required INT:INT in [
 test_all "$bandagepath --unicolpos" 114 "" "--unicolpos: 1 required COLOR missing Run with --help or --helpall for more information."
 test_all "$bandagepath --unicolneg" 114 "" "--unicolneg: 1 required COLOR missing Run with --help or --helpall for more information."
 test_all "$bandagepath --unicolspe" 114 "" "--unicolspe: 1 required COLOR missing Run with --help or --helpall for more information."
-#test_all "$bandagepath --depcollow" 114 "" "Bandage-NG error: --depcollow must be followed by a 6-digit hex colour (e.g. #FFB6C1), an 8-digit hex colour (e.g. #7FD2B48C) or a standard colour name (e.g. skyblue)"
-#test_all "$bandagepath --depcolhi"  114 "" "Bandage-NG error: --depcolhi must be followed by a 6-digit hex colour (e.g. #FFB6C1), an 8-digit hex colour (e.g. #7FD2B48C) or a standard colour name (e.g. skyblue)"
+#test_all "$bandagepath --depcollow" 114 "" "BandagePro++ error: --depcollow must be followed by a 6-digit hex colour (e.g. #FFB6C1), an 8-digit hex colour (e.g. #7FD2B48C) or a standard colour name (e.g. skyblue)"
+#test_all "$bandagepath --depcolhi"  114 "" "BandagePro++ error: --depcolhi must be followed by a 6-digit hex colour (e.g. #FFB6C1), an 8-digit hex colour (e.g. #7FD2B48C) or a standard colour name (e.g. skyblue)"
 test_all "$bandagepath --depvallow" 114 "" "--depvallow: 1 required FLOAT:FLOAT in [0 - 1e+06] missing Run with --help or --helpall for more information."
 test_all "$bandagepath --depvalhi" 114 "" "--depvalhi: 1 required FLOAT:FLOAT in [0 - 1e+06] missing Run with --help or --helpall for more information."
 test_all "$bandagepath --query"    114 "" "--query: 1 required TEXT:FILE missing Run with --help or --helpall for more information."

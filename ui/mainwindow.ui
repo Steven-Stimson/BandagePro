@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>BandageNG</string>
+   <string>BandagePro++</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images/images.qrc">
@@ -3020,10 +3020,10 @@ then colour which other nodes in the graph are likely to be contiguous
      <normaloff>:/icons/icon.png</normaloff>:/icons/icon.png</iconset>
    </property>
    <property name="text">
-    <string>BandageNG online help</string>
+    <string>BandagePro++ online help</string>
    </property>
    <property name="toolTip">
-    <string>BandageNG online help</string>
+    <string>BandagePro++ online help</string>
    </property>
   </action>
   <action name="actionCopy_selected_node_path_to_clipboard">

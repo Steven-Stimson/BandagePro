@@ -71,31 +71,31 @@ static SubCmd parseCmdLine(CLI::App &app, int argc, char *argv[]) {
 
     addSettings(app);
 
-    // "BandageNG load"
+    // "BandagePro++ load"
     LoadCmd loadCmd;
     auto *load = addLoadSubcommand(app, loadCmd);
 
-    // "BandgeNG image"
+    // "BandagePro++ image"
     ImageCmd imageCmd;
     auto *image = addImageSubcommand(app, imageCmd);
 
-    // "BandageNG info"
+    // "BandagePro++ info"
     InfoCmd infoCmd;
     auto *info = addInfoSubcommand(app, infoCmd);
 
-    // "BandageNG reduce"
+    // "BandagePro++ reduce"
     ReduceCmd reduceCmd;
     auto *reduce = addReduceSubcommand(app, reduceCmd);
 
-    // "BandageNG querypaths"
+    // "BandagePro++ querypaths"
     QueryPathsCmd qpCmd;
     auto *qp = addQueryPathsSubcommand(app, qpCmd);
 
-    // "BandageNG layout"
+    // "BandagePro++ layout"
     LayoutCmd laCmd;
     auto *la = addLayoutSubcommand(app, laCmd);
 
-    app.footer("Online Bandage help: https://github.com/asl/BandageNG/wiki");
+    app.footer("Online Bandage help: https://github.com/asl/BandageProPP/wiki");
 
     app.parse(argc, argv);
 
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
     if (g_memory->terminalWidth > 300) g_memory->terminalWidth = 300;
 #endif //Q_OS_WIN32
 
-    app->setApplicationName("Bandage++");
+    app->setApplicationName("BandagePro++");
     app->setApplicationVersion(APP_VERSION);
 
     return std::visit([&](const auto &command) {
@@ -196,10 +196,10 @@ int main(int argc, char *argv[]) {
         } else {
             // Filter our few incompativle options
             if (cli.count("--query")) {
-                std::cerr << "A graph must be given (e.g. via BandageNG load) to use the --query option" << std::endl;
+                std::cerr << "A graph must be given (e.g. via BandagePro++ load) to use the --query option" << std::endl;
                 return 1;
             } else if (cli.count("--csv")) {
-                std::cerr << "A graph must be given (e.g. via BandageNG load) to use the --csv option" << std::endl;
+                std::cerr << "A graph must be given (e.g. via BandagePro++ load) to use the --csv option" << std::endl;
                 return 1;
             }
 

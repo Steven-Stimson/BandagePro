@@ -84,18 +84,18 @@ jobs:
         working-directory: ${{github.workspace}}/tests
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
-               ./bandage_command_line_tests.sh ${{github.workspace}}/build/BandageNG
+               ./bandage_command_line_tests.sh ${{github.workspace}}/build/BandagePro++
              elif [ "$RUNNER_OS" == "macOS" ]; then
                brew install imagemagick
-               ./bandage_command_line_tests.sh ${{github.workspace}}/build/BandageNG.app/Contents/MacOS/BandageNG
+               ./bandage_command_line_tests.sh ${{github.workspace}}/build/BandagePro++.app/Contents/MacOS/BandagePro++
              fi
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
           name: Bandage-${{ runner.os }}
           path: |
-             ${{github.workspace}}/build/BandageNG
-             ${{github.workspace}}/build/BandageNG.app
-             ${{github.workspace}}/build/BandageNG.exe
+             ${{github.workspace}}/build/BandagePro++
+             ${{github.workspace}}/build/BandagePro++.app
+             ${{github.workspace}}/build/BandagePro++.exe
              ${{github.workspace}}/build/BandageTests
              ${{github.workspace}}/build/BandageTests.exe

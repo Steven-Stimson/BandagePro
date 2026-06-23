@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # Check if the event is not triggered by a fork
-    if: ${{ github.repository == 'asl/BandageNG' && github.ref == 'refs/heads/dev' }}
+    if: ${{ github.repository == 'asl/BandageProPP' && github.ref == 'refs/heads/dev' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

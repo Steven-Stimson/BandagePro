@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.repository == 'asl/BandageNG' }}
+    if: ${{ github.repository == 'asl/BandageProPP' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

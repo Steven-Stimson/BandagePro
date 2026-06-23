@@ -1,13 +1,13 @@
 // Copyright 2023 Anton Korobeynikov
 
-// This file is part of Bandage-NG
+// This file is part of BandagePro++
 
-// Bandage-NG is free software: you can redistribute it and/or modify
+// BandagePro++ is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Bandage-NG is distributed in the hope that it will be useful,
+// BandagePro++ is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -68,14 +68,14 @@ int handleImageCmd(QApplication *app,
     else if (imageFileExtension == ".svg")
         pixelImage = false;
     else {
-        outputText("Bandage-NG error: the output filename must end in .png, .jpg or .svg", &err);
+        outputText("BandagePro++ error: the output filename must end in .png, .jpg or .svg", &err);
         return 1;
     }
 
     QString inputFile = QString::fromStdString(cmd.m_graph.generic_string());
     bool loadSuccess = g_assemblyGraph->loadGraphFromFile(inputFile);
     if (!loadSuccess) {
-        outputText("Bandage-NG error: could not load " + inputFile, &err);
+        outputText("BandagePro++ error: could not load " + inputFile, &err);
         return 1;
     }
 

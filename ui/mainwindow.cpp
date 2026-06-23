@@ -287,7 +287,7 @@ void MainWindow::cleanUp() {
     }
 
     g_assemblyGraph->cleanUp();
-    setWindowTitle("Bandage-NG");
+    setWindowTitle("BandagePro++");
 
     g_annotationsManager->cleanUp();
 
@@ -444,7 +444,7 @@ void MainWindow::loadGraph(QString fullFileName) {
                                          "is undefined.");
 
                 setUiState(GRAPH_LOADED);
-                setWindowTitle("BandageNG - " + fullFileName);
+                setWindowTitle("BandagePro++ - " + fullFileName);
 
                 g_assemblyGraph->determineGraphInfo();
                 displayGraphDetails();
@@ -2378,7 +2378,7 @@ void MainWindow::selectBasedOnContiguity(ContiguityStatus targetContiguityStatus
 
 
 void MainWindow::openBandageUrl() {
-    QDesktopServices::openUrl(QUrl("https://github.com/asl/Bandage-NG/wiki"));
+    QDesktopServices::openUrl(QUrl("https://github.com/asl/BandageProPP/wiki"));
 }
 
 

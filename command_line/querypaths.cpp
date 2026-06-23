@@ -1,13 +1,13 @@
 // Copyright 2023 Anton Korobeynikov
 
-// This file is part of Bandage-NG
+// This file is part of BandagePro++
 
-// Bandage-NG is free software: you can redistribute it and/or modify
+// BandagePro++ is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 
-// Bandage-NG is distributed in the hope that it will be useful,
+// BandagePro++ is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -58,7 +58,7 @@ int handleQueryPathsCmd(QApplication *app,
     // Ensure that the --query option isn't used, as that would overwrite the
     // queries file that is a positional argument.
     if (cli.count("--query")) {
-        err << "Bandage-NG error: the --query option cannot be used with Bandage querypaths." << Qt::endl;
+        err << "BandagePro++ error: the --query option cannot be used with Bandage querypaths." << Qt::endl;
         return 1;
     }
 
@@ -72,15 +72,15 @@ int handleQueryPathsCmd(QApplication *app,
     QFile pathsFile(pathFastaFilename);
     QFile hitsFile(hitsFastaFilename);
     if (tableFile.exists()) {
-        outputText("Bandage-NG error: " + tableFilename + " already exists.", &err);
+        outputText("BandagePro++ error: " + tableFilename + " already exists.", &err);
         return 1;
     }
     if (cmd.m_pathFasta && pathsFile.exists()) {
-        outputText("Bandage-NG error: " + pathFastaFilename + " already exists.", &err);
+        outputText("BandagePro++ error: " + pathFastaFilename + " already exists.", &err);
         return 1;
     }
     if (cmd.m_hitsFasta && hitsFile.exists()) {
-        outputText("Bandage-NG error: " + hitsFastaFilename + " already exists.", &err);
+        outputText("BandagePro++ error: " + hitsFastaFilename + " already exists.", &err);
         return 1;
     }
 
@@ -94,7 +94,7 @@ int handleQueryPathsCmd(QApplication *app,
 
     QString inputFile = QString::fromStdString(cmd.m_graph.generic_string());
     if (!g_assemblyGraph->loadGraphFromFile(inputFile)) {
-        err << "Bandage-NG error: could not load " << inputFile << Qt::endl;
+        err << "BandagePro++ error: could not load " << inputFile << Qt::endl;
         return 1;
     }
 
