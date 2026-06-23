@@ -22,14 +22,13 @@ BandagePro++ significantly extends the original Bandage experience with a focus 
 * [Pre-built binaries](https://github.com/asl/BandageProPP#pre-built-binaries)
 * [Building from source](https://github.com/asl/BandageProPP#building-from-source)
 * [Contributing](https://github.com/asl/BandageProPP#contributing)
-* [Citation](https://github.com/asl/BandageProPP#citation)
 * [Credits](https://github.com/asl/BandageProPP#credits)
 * [License](https://github.com/asl/BandageProPP#license)
 
 
 ## Intro
 
-BandagePro++ is a GUI program that allows users to interact with the assembly graphs made by *de novo* assemblers such as <a href="http://cab.spbu.ru/software/spades" target="_blank">SPAdes</a>, <a href="https://github.com/voutcn/megahit" target="_blank">MEGAHIT</a> and others.
+BandagePro++ is a GUI program that allows users to interact with the assembly graphs made by *de novo* assemblers.
 
 *De novo* assembly graphs contain not only assembled contigs but also the connections between those contigs, which were previously not easily accessible. Bandage visualises assembly graphs, with connections, using graph layout algorithms. Nodes in the drawn graph, which represent contigs, can be automatically labelled with their ID, length or depth. Users can interact with the graph by moving, labelling and colouring nodes, and BandagePro++ extends these interactions with undo/redo support and richer graph editing capabilities. Sequence information can also be extracted directly from the graph viewer. By displaying connections between contigs, Bandage opens up new possibilities for analysing and improving *de novo* assemblies that are not possible by looking at contigs alone.
 
