@@ -49,7 +49,9 @@ jobs:
 
           cp BandagePro AppDir/usr/bin/
           cp build_scripts/sample_LastGraph AppDir/usr/bin/ || true
-          cp images/icon.png AppDir/usr/share/icons/hicolor/256x256/apps/bandagepro.png
+
+          # linuxdeploy requires the icon size to match the hicolor directory
+          convert images/icon.png -resize 256x256 AppDir/usr/share/icons/hicolor/256x256/apps/bandagepro.png
 
           cat > AppDir/usr/share/applications/bandagepro.desktop << 'EOF'
           [Desktop Entry]
