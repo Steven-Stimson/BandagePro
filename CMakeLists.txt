@@ -9,6 +9,22 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg Test Concurrent Network)
 
+# Qt 6.7.x's macOS Gui target still links the deprecated AGL framework, which
+# Apple removed from the macOS 26 / Xcode 26 SDKs. Strip it from the link line
+# so the build succeeds on current macOS runners.
+if(APPLE AND TARGET Qt6::Gui)
+    get_target_property(_qt6_gui_libs Qt6::Gui INTERFACE_LINK_LIBRARIES)
+    if(_qt6_gui_libs)
+        list(FILTER _qt6_gui_libs EXCLUDE REGEX "[Aa][Gg][Ll]")
+        set_target_properties(Qt6::Gui PROPERTIES INTERFACE_LINK_LIBRARIES "${_qt6_gui_libs}")
+    endif()
+    get_target_property(_qt6_gui_opts Qt6::Gui INTERFACE_LINK_OPTIONS)
+    if(_qt6_gui_opts)
+        list(FILTER _qt6_gui_opts EXCLUDE REGEX "[Aa][Gg][Ll]")
+        set_target_properties(Qt6::Gui PROPERTIES INTERFACE_LINK_OPTIONS "${_qt6_gui_opts}")
+    endif()
+endif()
+
 set(LIB_SOURCES
     graphsearch/hit.cpp
     graphsearch/queries.cpp

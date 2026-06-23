@@ -96,7 +96,9 @@ jobs:
 
       - name: '⚙️ Configure CMake'
         # Build arm64 only: the Qt 6.7.3 x86_64 slice links the deprecated AGL
-        # framework, which is not present on macOS 26 / Xcode 26 runners.
+        # framework, which is not present on macOS 26 / Xcode 26 runners. AGL is
+        # also stripped from the link line in CMakeLists.txt so the arm64 build
+        # can link successfully.
         run:  cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_OSX_ARCHITECTURES="arm64" -DCMAKE_INSTALL_PREFIX=/usr -G Ninja
 
       - name: '🚧 Build'

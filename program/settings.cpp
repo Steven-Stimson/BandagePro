@@ -19,6 +19,7 @@
 #include "settings.h"
 #include "graph/nodecolorer.h"
 #include <QDir>
+#include <QFontDatabase>
 
 Settings::Settings()
 {
@@ -73,7 +74,7 @@ Settings::Settings()
     displayNodeDepth = false;
     displayNodeCsvData = false;
     displayNodeCsvDataCol = 0;
-    labelFont = QFont::systemFont(QFont::GeneralFont);
+    labelFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
 #ifdef Q_OS_WIN
     // MS Sans Serif is a legacy bitmap/raster font that Qt6's DirectWrite
     // backend cannot render. If the system default happens to resolve to it
