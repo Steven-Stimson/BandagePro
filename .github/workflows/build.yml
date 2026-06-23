@@ -49,7 +49,7 @@ jobs:
           path: BandagePro-Linux-x86_64.tar.gz
 
   build-macos:
-    runs-on: macos-13
+    runs-on: macos-latest
     name: '🍎 macOS'
     steps:
       - name: '🧰 Checkout'
