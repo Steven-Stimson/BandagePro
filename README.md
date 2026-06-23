@@ -5,7 +5,16 @@
 
 # <img src="http://rrwick.github.io/Bandage/images/logo.png" alt="Bandage" width="115" height="115" align="middle">BandagePro++
 
-## IMPORTANT: This is a fork of original Bandage repo. It may contain new features, new bugs and otherwise be not compatible with the Bandage by Ryan Wick. The documentation, instructions, etc. might be incomplete, missed and inaccurate as well
+## IMPORTANT
+
+**BandagePro++ is the spiritual successor to the original [Bandage](https://github.com/rrwick/Bandage) by Ryan Wick.** It carries forward Bandage's core philosophy of interactive assembly graph visualization while introducing substantial enhancements to graph editing and usability. As an active evolution of the original project, it may contain new features and new bugs, and may not be fully compatible with the original Bandage. Documentation and instructions are still being expanded and may be incomplete.
+
+## What's New
+
+BandagePro++ significantly extends the original Bandage experience with a focus on interactive graph manipulation:
+
+* **Undo / Redo support** — Experiment freely with graph edits; any change can be reverted and re-applied.
+* **Enhanced graph editing** — Improved tools for manipulating and refining assembly graphs directly within the visualizer.
 
 ## Table of Contents
 * [Intro](https://github.com/asl/BandageProPP#intro)
@@ -22,7 +31,7 @@
 
 BandagePro++ is a GUI program that allows users to interact with the assembly graphs made by *de novo* assemblers such as <a href="http://cab.spbu.ru/software/spades" target="_blank">SPAdes</a>, <a href="https://github.com/voutcn/megahit" target="_blank">MEGAHIT</a> and others.
 
-*De novo* assembly graphs contain not only assembled contigs but also the connections between those contigs, which were previously not easily accessible. Bandage visualises assembly graphs, with connections, using graph layout algorithms. Nodes in the drawn graph, which represent contigs, can be automatically labelled with their ID, length or depth. Users can interact with the graph by moving, labelling and colouring nodes. Sequence information can also be extracted directly from the graph viewer. By displaying connections between contigs, Bandage opens up new possibilities for analysing and improving *de novo* assemblies that are not possible by looking at contigs alone.
+*De novo* assembly graphs contain not only assembled contigs but also the connections between those contigs, which were previously not easily accessible. Bandage visualises assembly graphs, with connections, using graph layout algorithms. Nodes in the drawn graph, which represent contigs, can be automatically labelled with their ID, length or depth. Users can interact with the graph by moving, labelling and colouring nodes, and BandagePro++ extends these interactions with undo/redo support and richer graph editing capabilities. Sequence information can also be extracted directly from the graph viewer. By displaying connections between contigs, Bandage opens up new possibilities for analysing and improving *de novo* assemblies that are not possible by looking at contigs alone.
 
 ## Help
 
