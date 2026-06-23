@@ -269,9 +269,9 @@ macx:ICON = images/application.icns
 macx:QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
 
 # AGL was removed in modern macOS SDKs; Qt 5.15.2's mkspec still links it,
-# so explicitly drop it from the link line on macOS.
+# so explicitly set OpenGL libs to only OpenGL framework on macOS.
+macx:QMAKE_LIBS_OPENGL = -framework OpenGL
 macx:LIBS -= -framework AGL
-macx:QMAKE_LIBS_OPENGL -= -framework AGL
 
 # Each target platform needs the native platform as well as Qt's minimal platform.
 win32: QTPLUGIN.platforms += qwindows qminimal
