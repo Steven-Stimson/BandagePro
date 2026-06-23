@@ -178,6 +178,13 @@ add_executable(BandageProPP program/main.cpp ${RESOURCES})
 target_link_libraries(BandageProPP BandageCLI BandageLib CLI11::CLI11 Qt6::Core Qt6::Widgets Qt6::Concurrent ${bandage_zlib})
 set_target_properties(BandageProPP PROPERTIES OUTPUT_NAME "BandagePro++")
 
+# Build as a Windows GUI application (no console window on startup).
+# Qt provides a WinMain wrapper that calls our main(). CLI mode still works,
+# but stdout/stderr are not attached to a console by default.
+if (WIN32)
+    set_target_properties(BandageProPP PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
 if (APPLE)
   set_target_properties(BandageProPP PROPERTIES
         MACOSX_BUNDLE ON
