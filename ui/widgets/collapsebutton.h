@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QToolButton>
 #include <QWidget>
 #include <QParallelAnimationGroup>
@@ -5,9 +7,8 @@
 #include <QPropertyAnimation>
 #include <QLayout>
 
-#pragma once
-
 class CollapseButton : public QToolButton {
+    Q_OBJECT
 public:
   explicit CollapseButton(QWidget *parent = nullptr) : QToolButton(parent), content_(nullptr) {
     setCheckable(true);

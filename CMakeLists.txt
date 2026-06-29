@@ -59,6 +59,7 @@ set(LIB_SOURCES
     ui/dialogs/changenodedepthdialog.cpp
     ui/dialogs/changenodenamedialog.cpp
     ui/widgets/colourbutton.cpp
+    ui/widgets/collapsebutton.h
     ui/dialogs/enteronequerydialog.cpp
     ui/dialogs/pathlistdialog.cpp
     ui/dialogs/walklistdialog.cpp
