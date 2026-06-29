@@ -7,30 +7,23 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Qt 6.7.x's macOS Gui target still links the deprecated AGL framework, which
-# Apple removed from the macOS 26 / Xcode 26 SDKs. Prevent CMake's FindOpenGL
-# from adding -framework AGL. Must be set BEFORE find_package(Qt6).
-if(APPLE)
-    set(OPENGL_gl_LIBRARY "-framework OpenGL" CACHE STRING "" FORCE)
-    set(OPENGL_agl_LIBRARY "" CACHE STRING "" FORCE)
-endif()
-
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg Test Concurrent Network)
 
-# Strip any remaining AGL references from Qt target properties after find_package
+# Qt 6.7.x links the deprecated AGL framework on macOS, which was removed in
+# Xcode 26 / macOS 26 SDK. Strip it from the OpenGL target if present.
 if(APPLE)
+    if(TARGET OpenGL::GL)
+        get_target_property(_gl_libs OpenGL::GL INTERFACE_LINK_LIBRARIES)
+        if(_gl_libs)
+            list(FILTER _gl_libs EXCLUDE REGEX "[Aa][Gg][Ll]")
+            set_target_properties(OpenGL::GL PROPERTIES INTERFACE_LINK_LIBRARIES "${_gl_libs}")
+        endif()
+    endif()
     if(TARGET Qt6::Gui)
         get_target_property(_qt6_gui_libs Qt6::Gui INTERFACE_LINK_LIBRARIES)
         if(_qt6_gui_libs)
-            string(REGEX REPLACE "\\$<[^>]*:[^>]*[Aa][Gg][Ll][^>]*>" "" _qt6_gui_libs "${_qt6_gui_libs}")
             list(FILTER _qt6_gui_libs EXCLUDE REGEX "[Aa][Gg][Ll]")
             set_target_properties(Qt6::Gui PROPERTIES INTERFACE_LINK_LIBRARIES "${_qt6_gui_libs}")
-        endif()
-        get_target_property(_qt6_gui_opts Qt6::Gui INTERFACE_LINK_OPTIONS)
-        if(_qt6_gui_opts)
-            string(REGEX REPLACE "\\$<[^>]*:[^>]*[Aa][Gg][Ll][^>]*>" "" _qt6_gui_opts "${_qt6_gui_opts}")
-            list(FILTER _qt6_gui_opts EXCLUDE REGEX "[Aa][Gg][Ll]")
-            set_target_properties(Qt6::Gui PROPERTIES INTERFACE_LINK_OPTIONS "${_qt6_gui_opts}")
         endif()
     endif()
 endif()
