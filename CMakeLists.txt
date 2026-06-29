@@ -7,15 +7,18 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Svg Test Concurrent Network)
-
 # Qt 6.7.x's macOS Gui target still links the deprecated AGL framework, which
-# Apple removed from the macOS 26 / Xcode 26 SDKs. Strip it from the link line.
+# Apple removed from the macOS 26 / Xcode 26 SDKs. Prevent CMake's FindOpenGL
+# from adding -framework AGL. Must be set BEFORE find_package(Qt6).
 if(APPLE)
-    # Prevent CMake's FindOpenGL from adding -framework AGL
     set(OPENGL_gl_LIBRARY "-framework OpenGL" CACHE STRING "" FORCE)
     set(OPENGL_agl_LIBRARY "" CACHE STRING "" FORCE)
-    # Strip from Qt target properties (handles generator expressions too)
+endif()
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets Svg Test Concurrent Network)
+
+# Strip any remaining AGL references from Qt target properties after find_package
+if(APPLE)
     if(TARGET Qt6::Gui)
         get_target_property(_qt6_gui_libs Qt6::Gui INTERFACE_LINK_LIBRARIES)
         if(_qt6_gui_libs)
