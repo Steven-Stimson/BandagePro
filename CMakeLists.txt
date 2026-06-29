@@ -43,6 +43,7 @@ set(LIB_SOURCES
     graph/graphicsitemnode.cpp
     graph/movenodescommand.cpp
     graph/graphcommand.cpp
+    graph/viewstate.cpp
     graph/graphlocation.cpp
     graph/path.cpp
     program/globals.cpp

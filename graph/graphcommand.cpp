@@ -1,4 +1,5 @@
 #include "graphcommand.h"
+#include "viewstate.h"
 
 #include "assemblygraph.h"
 #include "io.h"
@@ -37,9 +38,13 @@ void GraphStateCommand::undo()
     restoreState(m_before);
 }
 
-void GraphStateCommand::restoreState(const QByteArray &gfaData)
+void GraphStateCommand::restoreState(const QByteArray &viewStateData)
 {
-    if (gfaData.isEmpty())
+    if (viewStateData.isEmpty())
+        return;
+
+    ViewState viewState = ViewState::deserialize(viewStateData);
+    if (viewState.gfaData.isEmpty())
         return;
 
     // Write the snapshot to a temporary GFA file so the existing graph builder
@@ -48,7 +53,7 @@ void GraphStateCommand::restoreState(const QByteArray &gfaData)
     tempFile.setAutoRemove(true);
     if (!tempFile.open())
         return;
-    tempFile.write(gfaData);
+    tempFile.write(viewState.gfaData);
     tempFile.close();
 
     auto builder = io::AssemblyGraphBuilder::get(tempFile.fileName());
@@ -75,5 +80,5 @@ void GraphStateCommand::restoreState(const QByteArray &gfaData)
     g_assemblyGraph->determineGraphInfo();
 
     if (m_callback)
-        m_callback();
+        m_callback(viewState);
 }

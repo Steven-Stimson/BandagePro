@@ -54,9 +54,16 @@ public:
     QColor m_colour;
     QPainterPath m_path;
     float m_width;
+    Qt::PenCapStyle m_capStyle = Qt::FlatCap;
     size_t m_grabIndex : 31;
     bool m_hasArrow : 1;
+    bool m_rotating : 1;
     adt::SmallPODVector<QPointF> m_startPoints;
+    QPointF m_rotationCenter;
+    QPointF m_rotationStartPos;
+
+    void setCapStyle(Qt::PenCapStyle style) { m_capStyle = style; }
+    Qt::PenCapStyle capStyle() const { return m_capStyle; }
 
     static QSize getNodeTextSize(const QString& text);
     static float getNodeWidth(double depthRelativeToMeanDrawnDepth,
@@ -71,6 +78,7 @@ public:
     void paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget *) override;
     QPainterPath shape() const override;
     void shiftPoints(QPointF difference);
+    void rotatePoints(QPointF center, double angleRadians);
     void remakePath();
     bool usePositiveNodeColour() const;
 

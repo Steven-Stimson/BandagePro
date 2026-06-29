@@ -71,6 +71,7 @@ signals:
     void doubleClickedNode(DeBruijnNode * node);
     void copySelectedSequencesToClipboard();
     void saveSelectedSequencesToFile();
+    void rotationFinished();
 };
 
 #endif // MYGRAPHICSVIEW_H

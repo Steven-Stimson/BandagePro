@@ -174,10 +174,10 @@ void Twine::printRepr(raw_ostream &OS) const {
 
 #if !defined(NDEBUG) || defined(LLVM_ENABLE_DUMP)
 LLVM_DUMP_METHOD void Twine::dump() const {
-  print(dbgs());
+  // dbgs() not available in this stripped LLVM
 }
 
 LLVM_DUMP_METHOD void Twine::dumpRepr() const {
-  printRepr(dbgs());
+  // dbgs() not available in this stripped LLVM
 }
 #endif

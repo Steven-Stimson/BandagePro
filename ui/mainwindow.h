@@ -23,6 +23,7 @@
 #include "graph/nodecolorer.h"
 #include "graph/contiguity.h"
 #include "graph/graphscope.h"
+#include "graph/viewstate.h"
 
 #include "layout/graphlayout.h"
 #include "program/globals.h"
@@ -33,6 +34,8 @@
 #include <QString>
 #include <vector>
 #include <QLineEdit>
+#include <QComboBox>
+#include <QLabel>
 #include <QRectF>
 #include <QThread>
 
@@ -73,12 +76,21 @@ private:
     GraphSearchDialog * m_blastSearchDialog;
 
     bool m_alreadyShown;
+    bool m_rotationMode = false;
+    QPointF m_rotationCenter;
+    QPointF m_rotationStartPos;
+    QByteArray m_rotationBeforeState;
+
+    // Edge cap style combo box (added dynamically in constructor)
+    QComboBox * m_edgeCapStyleComboBox;
+    QLabel * m_edgeCapStyleLabel;
 
     void cleanUp();
     void displayGraphDetails();
     void clearGraphDetails();
     void resetScene();
     void resetAllNodeColours();
+    void drawGraphWithLinePoints(const ViewState &viewState);
     void layoutGraph();
     void zoomToFitRect(QRectF rect);
     void setZoomSpinBoxStep();
@@ -107,7 +119,7 @@ private:
 
     QByteArray captureGraphState() const;
     void pushGraphStateCommand(const QByteArray &before, const QByteArray &after);
-    void afterGraphStateChange();
+    void afterGraphStateRestored(const ViewState &viewState);
 
     static QByteArray makeStringUrlSafe(QByteArray s);
     std::vector<DeBruijnNode *> addComplementaryNodes(std::vector<DeBruijnNode *> nodes);
@@ -141,6 +153,9 @@ private slots:
     void fontButtonPressed();
     void setNodeCustomColour();
     void setNodeCustomLabel();
+    void setNodeCapStyle();
+    void rotateSelectedNodes();
+    void onRotationFinished();
     void hideNodes();
     void openSettingsDialog();
     void openAboutDialog();

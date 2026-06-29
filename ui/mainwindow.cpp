@@ -23,6 +23,7 @@
 #include "ui/dialogs/graphsearchdialog.h"
 #include "bandagegraphicsview.h"
 #include "graphicsviewzoom.h"
+#include "widgets/collapsebutton.h"
 #include "bandagegraphicsscene.h"
 #include "ui/dialogs/logandownloaddialog.h"
 #include "ui/dialogs/myprogressdialog.h"
@@ -47,6 +48,7 @@
 #include "graph/io.h"
 #include "graph/graphcommand.h"
 #include "graph/gfawriter.h"
+#include "graph/viewstate.h"
 #include "graph/nodecolorers.h"
 #include "graph/gfawriter.h"
 #include "graph/fastawriter.h"
@@ -67,8 +69,12 @@
 #include <QColorDialog>
 #include <QFile>
 #include <QScrollBar>
+#include <QComboBox>
+#include <QLabel>
+#include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <cmath>
 #include <QShortcut>
 #include <QMainWindow>
 #include <QDesktopServices>
@@ -112,6 +118,24 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     ui->selectedNodesTextEdit->setFixedHeight(ui->selectedNodesTextEdit->sizeHint().height() / 2.5);
     ui->selectedEdgesTextEdit->setFixedHeight(ui->selectedEdgesTextEdit->sizeHint().height() / 2.5);
 
+    // Create edge cap style combo box and insert into edges layout
+    // Add cap style combo to the nodes modification widget (below Set colour/label buttons)
+    m_edgeCapStyleLabel = new QLabel("Node cap:");
+    m_edgeCapStyleComboBox = new QComboBox();
+    m_edgeCapStyleComboBox->addItem("Flat", QVariant(static_cast<int>(Qt::FlatCap)));
+    m_edgeCapStyleComboBox->addItem("Round", QVariant(static_cast<int>(Qt::RoundCap)));
+    m_edgeCapStyleComboBox->addItem("Square", QVariant(static_cast<int>(Qt::SquareCap)));
+    m_edgeCapStyleComboBox->setVisible(false);
+    m_edgeCapStyleLabel->setVisible(false);
+    connect(m_edgeCapStyleComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this]() { setNodeCapStyle(); });
+
+    auto *grid = ui->selectedNodesModificationWidget->findChild<QGridLayout *>("gridLayout");
+    if (grid) {
+        grid->addWidget(m_edgeCapStyleLabel, 1, 0);
+        grid->addWidget(m_edgeCapStyleComboBox, 1, 1, 1, 2);
+    }
+
     setUiState(NO_GRAPH_LOADED);
 
     m_graphicsViewZoom = new GraphicsViewZoom(g_graphicsView);
@@ -138,6 +162,224 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     ui->bedButton->setContent(ui->bedLoadWidget);
     ui->annotationsButton->setContent(ui->annotationsListWidget);
     ui->blastDetailsButton->setContent(ui->blastDetailsWidget);
+
+    // Helper: create a CollapseButton with standard styling
+    auto createCollapseBtn = [](const QString &text, QWidget *parent) -> CollapseButton * {
+        auto *btn = new CollapseButton(parent);
+        btn->setText(text);
+        btn->setIconSize(QSize(8, 8));
+        btn->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        btn->setArrowType(Qt::RightArrow);
+        btn->setStyleSheet("QToolButton {border: none; font-weight: bold;}");
+        return btn;
+    };
+
+    // Helper for left panel: replace a QLabel header inside a container widget
+    // with a CollapseButton. The content widget is in the same container's layout.
+    auto collapseInsideContainer = [&](QLabel *label, QWidget *content) {
+        auto *container = label->parentWidget();
+        auto *layout = container ? qobject_cast<QBoxLayout *>(container->layout()) : nullptr;
+        if (!layout) return;
+        int idx = layout->indexOf(label);
+        if (idx < 0) return;
+        auto *btn = createCollapseBtn(label->text(), container);
+        btn->setContent(content);
+        layout->insertWidget(idx, btn);
+        label->hide();
+    };
+
+    // Left panel sections — label and content are in the same container widget
+    collapseInsideContainer(ui->label_7, ui->widget_14);      // Graph information
+    collapseInsideContainer(ui->label_5, ui->graphDrawingWidget_2); // Graph drawing
+    collapseInsideContainer(ui->label_10, ui->widget_2);      // Graph display
+    collapseInsideContainer(ui->nodeLabelsG, ui->widget_8);   // Node labels
+
+    // Helper for right panel: build a new container widget that holds
+    // a CollapseButton header + all content items, and insert it into
+    // the given layout at the position of the first content item.
+    // Returns the CollapseButton.
+    auto buildCollapsibleSection = [&](QVBoxLayout *outerLayout,
+                                        const QString &title,
+                                        const std::vector<QWidget *> &contentItems,
+                                        int replaceFromIdx) -> CollapseButton * {
+        // Build the inner container (like blastSearchWidget)
+        auto *container = new QWidget();
+        auto *innerLayout = new QVBoxLayout(container);
+        innerLayout->setContentsMargins(0, 0, 0, 0);
+
+        auto *btn = createCollapseBtn(title, container);
+        innerLayout->addWidget(btn);
+
+        // Move content items from outerLayout into innerLayout
+        for (auto *w : contentItems) {
+            int idx = outerLayout->indexOf(w);
+            if (idx >= 0) {
+                outerLayout->removeWidget(w);
+                innerLayout->addWidget(w);
+                w->setParent(container);
+            }
+        }
+
+        btn->setContent(nullptr); // will be set below — we need to wrap remaining items
+        // Actually, setContent should point to the part that collapses.
+        // We want everything after the button to collapse.
+        // Create a wrapper for all items after the button
+        auto *contentWrapper = new QWidget(container);
+        auto *cwLayout = new QVBoxLayout(contentWrapper);
+        cwLayout->setContentsMargins(0, 0, 0, 0);
+        // Move items from innerLayout (after btn) into contentWrapper
+        while (innerLayout->count() > 1) { // index 0 is the button
+            auto *item = innerLayout->takeAt(1);
+            if (auto *w = item->widget()) {
+                cwLayout->addWidget(w);
+                w->setParent(contentWrapper);
+            } else if (auto *l = item->layout()) {
+                cwLayout->addLayout(l);
+            }
+            delete item;
+        }
+        innerLayout->addWidget(contentWrapper);
+        btn->setContent(contentWrapper);
+
+        // Insert container into outerLayout
+        outerLayout->insertWidget(replaceFromIdx, container);
+        return btn;
+    };
+
+    // Right panel sections
+    auto *vl = qobject_cast<QVBoxLayout *>(ui->selectionScrollAreaWidgetContents->layout());
+
+    // Find nodes: replace hLayout_findNodes + line_10 + nodeSelectionWidget + selectNodesButton
+    {
+        int startIdx = vl->indexOf(ui->hLayout_findNodes);
+        // hLayout_findNodes is a sub-layout, not a widget. We need to handle it specially.
+        // Remove the hLayout_findNodes layout item and extract its widgets.
+        QHBoxLayout *hLayout = ui->hLayout_findNodes;
+        // Take hLayout out of vl
+        int hIdx = vl->indexOf(hLayout);
+        if (hIdx >= 0) {
+            vl->removeItem(vl->itemAt(hIdx)); // removes the layout item, hLayout is now orphaned
+        }
+
+        auto *container = new QWidget();
+        auto *innerLayout = new QVBoxLayout(container);
+        innerLayout->setContentsMargins(0, 0, 0, 0);
+
+        // Create header row with InfoTextWidget + CollapseButton + spacer
+        auto *headerRow = new QWidget(container);
+        auto *headerHLayout = new QHBoxLayout(headerRow);
+        headerHLayout->setContentsMargins(0, 0, 0, 0);
+        // Move InfoTextWidget from old hLayout
+        if (ui->findNodesHeaderInfo->parentWidget() != headerRow) {
+            // findNodesHeaderInfo was in hLayout, which is now orphaned
+            headerHLayout->addWidget(ui->findNodesHeaderInfo);
+            ui->findNodesHeaderInfo->setParent(headerRow);
+        }
+        auto *btn = createCollapseBtn(ui->label_14->text(), headerRow);
+        headerHLayout->addWidget(btn);
+        // Add a spacer
+        headerHLayout->addStretch();
+        innerLayout->addWidget(headerRow);
+
+        // Content wrapper
+        auto *contentWrapper = new QWidget(container);
+        auto *cwLayout = new QVBoxLayout(contentWrapper);
+        cwLayout->setContentsMargins(0, 0, 0, 0);
+        std::vector<QWidget *> items = {ui->line_10, ui->nodeSelectionWidget, ui->selectNodesButton};
+        for (auto *w : items) {
+            int idx = vl->indexOf(w);
+            if (idx >= 0) { vl->removeWidget(w); cwLayout->addWidget(w); w->setParent(contentWrapper); }
+        }
+        innerLayout->addWidget(contentWrapper);
+        btn->setContent(contentWrapper);
+
+        if (startIdx >= 0)
+            vl->insertWidget(startIdx, container);
+        ui->label_14->hide();
+    }
+
+    // Find paths
+    {
+        int startIdx = vl->indexOf(ui->hLayout_findPaths);
+        int hIdx = vl->indexOf(ui->hLayout_findPaths);
+        if (hIdx >= 0) vl->removeItem(vl->itemAt(hIdx));
+
+        auto *container = new QWidget();
+        auto *innerLayout = new QVBoxLayout(container);
+        innerLayout->setContentsMargins(0, 0, 0, 0);
+
+        auto *headerRow = new QWidget(container);
+        auto *headerHLayout = new QHBoxLayout(headerRow);
+        headerHLayout->setContentsMargins(0, 0, 0, 0);
+        headerHLayout->addWidget(ui->findPathsHeaderInfo);
+        ui->findPathsHeaderInfo->setParent(headerRow);
+        auto *btn = createCollapseBtn(ui->label_114->text(), headerRow);
+        headerHLayout->addWidget(btn);
+        headerHLayout->addStretch();
+        innerLayout->addWidget(headerRow);
+
+        auto *contentWrapper = new QWidget(container);
+        auto *cwLayout = new QVBoxLayout(contentWrapper);
+        cwLayout->setContentsMargins(0, 0, 0, 0);
+        std::vector<QWidget *> items = {ui->line_101, ui->pathSelectionWidget, ui->pathSelectButton, ui->pathListButton};
+        for (auto *w : items) {
+            int idx = vl->indexOf(w);
+            if (idx >= 0) { vl->removeWidget(w); cwLayout->addWidget(w); w->setParent(contentWrapper); }
+        }
+        innerLayout->addWidget(contentWrapper);
+        btn->setContent(contentWrapper);
+
+        if (startIdx >= 0)
+            vl->insertWidget(startIdx, container);
+        ui->label_114->hide();
+    }
+
+    // Find walks
+    {
+        int startIdx = vl->indexOf(ui->hLayout_findWalks);
+        int hIdx = vl->indexOf(ui->hLayout_findWalks);
+        if (hIdx >= 0) vl->removeItem(vl->itemAt(hIdx));
+
+        auto *container = new QWidget();
+        auto *innerLayout = new QVBoxLayout(container);
+        innerLayout->setContentsMargins(0, 0, 0, 0);
+
+        auto *headerRow = new QWidget(container);
+        auto *headerHLayout = new QHBoxLayout(headerRow);
+        headerHLayout->setContentsMargins(0, 0, 0, 0);
+        headerHLayout->addWidget(ui->findWalksHeaderInfo);
+        ui->findWalksHeaderInfo->setParent(headerRow);
+        auto *btn = createCollapseBtn(ui->label_115->text(), headerRow);
+        headerHLayout->addWidget(btn);
+        headerHLayout->addStretch();
+        innerLayout->addWidget(headerRow);
+
+        auto *contentWrapper = new QWidget(container);
+        auto *cwLayout = new QVBoxLayout(contentWrapper);
+        cwLayout->setContentsMargins(0, 0, 0, 0);
+        std::vector<QWidget *> items = {ui->line_102, ui->walkSelectionWidget, ui->walkSelectButton, ui->walkListButton};
+        for (auto *w : items) {
+            int idx = vl->indexOf(w);
+            if (idx >= 0) { vl->removeWidget(w); cwLayout->addWidget(w); w->setParent(contentWrapper); }
+        }
+        innerLayout->addWidget(contentWrapper);
+        btn->setContent(contentWrapper);
+
+        if (startIdx >= 0)
+            vl->insertWidget(startIdx, container);
+        ui->label_115->hide();
+    }
+
+    // Selected nodes: keep original QLabel visible, no collapse functionality.
+    // Content stays in-place in verticalLayout_4.
+
+    // Selected edges: keep original QLabel visible, no collapse functionality.
+    // Content stays in-place in verticalLayout_4.
+
+    // Expand all collapse buttons by default (sections start open)
+    for (auto *btn : findChildren<CollapseButton *>()) {
+        btn->setChecked(true);
+    }
 
     //If this is a Mac, change the 'Delete' shortcuts to 'Backspace' instead.
 #ifdef Q_OS_MAC
@@ -208,6 +450,7 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     connect(ui->nodeWidthSpinBox, SIGNAL(valueChanged(double)), this, SLOT(nodeWidthChanged()));
     connect(g_graphicsView, SIGNAL(copySelectedSequencesToClipboard()), this, SLOT(copySelectedSequencesToClipboard()));
     connect(g_graphicsView, SIGNAL(saveSelectedSequencesToFile()), this, SLOT(saveSelectedSequencesToFile()));
+    connect(g_graphicsView, SIGNAL(rotationFinished()), this, SLOT(onRotationFinished()));
     connect(ui->actionSave_entire_graph_to_FASTA, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToFasta()));
     connect(ui->actionSave_entire_graph_to_FASTA_only_positive_nodes, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToFastaOnlyPositiveNodes()));
     connect(ui->actionSave_entire_graph_to_GFA, SIGNAL(triggered(bool)), this, SLOT(saveEntireGraphToGfa()));
@@ -220,6 +463,7 @@ MainWindow::MainWindow(QString fileToLoadOnStartup, bool drawGraphAfterLoad) :
     connect(ui->actionMerge_all_possible_nodes, SIGNAL(triggered(bool)), this, SLOT(mergeAllPossible()));
     connect(ui->actionChange_node_name, SIGNAL(triggered(bool)), this, SLOT(changeNodeName()));
     connect(ui->actionChange_node_depth, SIGNAL(triggered(bool)), this, SLOT(changeNodeDepth()));
+    connect(ui->actionRotate_nodes, SIGNAL(triggered(bool)), this, SLOT(rotateSelectedNodes()));
     connect(ui->moreInfoButton, SIGNAL(clicked(bool)), this, SLOT(openGraphInfoDialog()));
 
     QAction *undoAction = g_undoStack->createUndoAction(this, tr("&Undo"));
@@ -322,20 +566,105 @@ QByteArray MainWindow::captureGraphState() const
     if (!readFile.open(QIODevice::ReadOnly))
         return {};
 
-    return readFile.readAll();
+    ViewState viewState;
+    viewState.gfaData = readFile.readAll();
+
+    // Capture zoom and rotation
+    viewState.zoom = g_absoluteZoom;
+    viewState.rotation = g_graphicsView ? g_graphicsView->getRotation() : 0.0;
+
+    // Capture color scheme
+    if (g_settings->nodeColorer)
+        viewState.colorScheme = g_settings->nodeColorer->scheme();
+
+    // Capture per-node colors and line points
+    for (auto &entry : g_assemblyGraph->m_deBruijnGraphNodes) {
+        auto *graphicsItemNode = entry->getGraphicsItemNode();
+        if (!graphicsItemNode)
+            continue;
+
+        std::string nodeName = entry->getName().toStdString();
+        viewState.nodeColors[nodeName] = graphicsItemNode->m_colour;
+        viewState.nodeCapStyles[nodeName] = static_cast<int>(graphicsItemNode->m_capStyle);
+
+        // Save line points
+        std::vector<QPointF> points;
+        points.reserve(graphicsItemNode->m_linePoints.size());
+        for (const auto &pt : graphicsItemNode->m_linePoints)
+            points.push_back(pt);
+        viewState.nodeLinePoints[nodeName] = std::move(points);
+    }
+
+    // Capture selected node names
+    if (m_scene) {
+        for (auto *item : m_scene->selectedItems()) {
+            auto *graphicsItemNode = dynamic_cast<GraphicsItemNode *>(item);
+            if (graphicsItemNode && graphicsItemNode->m_deBruijnNode)
+                viewState.selectedNodes.insert(graphicsItemNode->m_deBruijnNode->getName().toStdString());
+        }
+    }
+
+    return viewState.serialize();
 }
 
 void MainWindow::pushGraphStateCommand(const QByteArray &before, const QByteArray &after)
 {
-    g_undoStack->push(new GraphStateCommand(before, after, [this]() { afterGraphStateChange(); }));
+    g_undoStack->push(new GraphStateCommand(before, after, [this](const ViewState &vs) { afterGraphStateRestored(vs); }));
 }
 
-void MainWindow::afterGraphStateChange()
+void MainWindow::afterGraphStateRestored(const ViewState &viewState)
 {
     cleanUpAllBlast();
     resetNodeContiguityStatus();
-    resetAllNodeColours();
-    drawGraph();
+
+    // Restore color scheme
+    switchColourScheme(static_cast<int>(viewState.colorScheme));
+
+    // Draw graph using saved line points instead of re-running layout
+    drawGraphWithLinePoints(viewState);
+
+    // Override per-node colors with saved colors
+    for (auto &entry : g_assemblyGraph->m_deBruijnGraphNodes) {
+        auto *graphicsItemNode = entry->getGraphicsItemNode();
+        if (!graphicsItemNode)
+            continue;
+
+        std::string nodeName = entry->getName().toStdString();
+        auto colorIt = viewState.nodeColors.find(nodeName);
+        if (colorIt != viewState.nodeColors.end())
+            graphicsItemNode->setNodeColour(colorIt->second);
+
+        auto capIt = viewState.nodeCapStyles.find(nodeName);
+        if (capIt != viewState.nodeCapStyles.end())
+            graphicsItemNode->setCapStyle(static_cast<Qt::PenCapStyle>(capIt->second));
+    }
+
+    // Restore zoom
+    if (g_graphicsView && g_absoluteZoom > 0.0 && viewState.zoom > 0.0) {
+        double factor = viewState.zoom / g_absoluteZoom;
+        g_graphicsView->m_zoom->gentleZoom(factor, SPIN_BOX);
+    }
+
+    // Restore rotation
+    if (g_graphicsView)
+        g_graphicsView->setRotation(viewState.rotation);
+
+    // Restore selection
+    if (m_scene) {
+        m_scene->blockSignals(true);
+        m_scene->clearSelection();
+        for (auto &entry : g_assemblyGraph->m_deBruijnGraphNodes) {
+            auto *graphicsItemNode = entry->getGraphicsItemNode();
+            if (!graphicsItemNode)
+                continue;
+            if (viewState.selectedNodes.count(entry->getName().toStdString()))
+                graphicsItemNode->setSelected(true);
+        }
+        m_scene->blockSignals(false);
+    }
+
+    g_graphicsView->viewport()->update();
+    selectionChanged();
 }
 
 void MainWindow::loadLogan(QString accession) {
@@ -623,8 +952,15 @@ void MainWindow::selectionChanged()
 
     if (selectedNodes.empty())
     {
+        ui->selectedNodesTitleLabel->setText("Selected nodes");
         ui->selectedNodesTextEdit->setPlainText("");
-        setSelectedNodesWidgetsVisibility(false);
+        ui->selectedNodesLengthLabel->setText("Total length:");
+        ui->selectedNodesDepthLabel->setText("Mean depth:");
+        ui->selectedNodesTagLabel->setVisible(false);
+        if (m_edgeCapStyleLabel)
+            m_edgeCapStyleLabel->setVisible(false);
+        if (m_edgeCapStyleComboBox)
+            m_edgeCapStyleComboBox->setVisible(false);
     }
 
     else //One or more nodes selected
@@ -661,13 +997,28 @@ void MainWindow::selectionChanged()
         }
 
         ui->selectedNodesTextEdit->setPlainText(selectedNodeListText);
+
+        // Show cap style combo for nodes
+        if (m_edgeCapStyleLabel)
+            m_edgeCapStyleLabel->setVisible(true);
+        if (m_edgeCapStyleComboBox) {
+            m_edgeCapStyleComboBox->setVisible(true);
+            m_edgeCapStyleComboBox->blockSignals(true);
+            auto *firstNode = selectedNodes.front();
+            if (auto *gin = firstNode->getGraphicsItemNode()) {
+                int idx = m_edgeCapStyleComboBox->findData(QVariant(static_cast<int>(gin->capStyle())));
+                if (idx >= 0)
+                    m_edgeCapStyleComboBox->setCurrentIndex(idx);
+            }
+            m_edgeCapStyleComboBox->blockSignals(false);
+        }
     }
 
 
     if (selectedEdges.empty())
     {
+        ui->selectedEdgesTitleLabel->setText("Selected edges");
         ui->selectedEdgesTextEdit->setPlainText("");
-        setSelectedEdgesWidgetsVisibility(false);
     }
 
     else //One or more edges selected
@@ -1092,6 +1443,51 @@ void MainWindow::drawGraph() {
     g_assemblyGraph->resetNodes();
     g_assemblyGraph->markNodesToDraw(scope, startingNodes);
     layoutGraph();
+}
+
+
+void MainWindow::drawGraphWithLinePoints(const ViewState &viewState)
+{
+    resetScene();
+    g_assemblyGraph->resetNodes();
+
+    // Mark all nodes that have saved line points as drawn
+    for (auto *node : g_assemblyGraph->m_deBruijnGraphNodes) {
+        std::string nodeName = node->getName().toStdString();
+        if (viewState.nodeLinePoints.count(nodeName))
+            node->setAsDrawn();
+    }
+
+    // Determine which edges are drawn based on node drawn status
+    for (auto *edge : g_assemblyGraph->m_deBruijnGraphEdges)
+        edge->determineIfDrawn();
+
+    // Build a temporary layout-like structure from the saved line points
+    GraphLayout savedLayout(*g_assemblyGraph);
+    for (auto *node : g_assemblyGraph->m_deBruijnGraphNodes) {
+        std::string nodeName = node->getName().toStdString();
+        auto it = viewState.nodeLinePoints.find(nodeName);
+        if (it == viewState.nodeLinePoints.end())
+            continue;
+
+        auto &segments = savedLayout.segments(node);
+        for (const auto &pt : it->second)
+            segments.push_back(pt);
+    }
+
+    // Use the existing scene method to create graphics items
+    m_scene->addGraphicsItemsToScene(*g_assemblyGraph, savedLayout);
+    m_scene->setSceneRectangle();
+
+    double averageNodeWidth = g_settings->averageNodeWidth / pow(g_absoluteZoom, 0.75);
+    ui->nodeWidthSpinBox->setValue(averageNodeWidth);
+    g_assemblyGraph->recalculateAllNodeWidths(averageNodeWidth,
+                                              g_settings->depthPower, g_settings->depthEffectOnWidth);
+
+    setUiState(GRAPH_DRAWN);
+
+    //Move the focus to the view so the user can use keyboard controls to navigate.
+    g_graphicsView->setFocus();
 }
 
 
@@ -1714,6 +2110,86 @@ void MainWindow::setNodeCustomColour() {
         g_assemblyGraph->setCustomColour(selectedNode, newColour);
         if (selectedNode->getGraphicsItemNode() != nullptr)
             selectedNode->getGraphicsItemNode()->setNodeColour(newColour);
+    }
+
+    pushGraphStateCommand(before, captureGraphState());
+
+    g_graphicsView->viewport()->update();
+}
+
+void MainWindow::rotateSelectedNodes() {
+    std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
+    if (selectedNodes.empty())
+        return;
+
+    // Compute common center of all selected nodes
+    QPointF commonCenter;
+    int ptCount = 0;
+    for (auto *node : selectedNodes) {
+        if (auto *gin = node->getGraphicsItemNode()) {
+            for (const auto &pt : gin->m_linePoints) {
+                commonCenter += pt;
+                ptCount++;
+            }
+        }
+    }
+    if (ptCount == 0) return;
+    commonCenter /= ptCount;
+
+    // Save state before rotation
+    m_rotationBeforeState = captureGraphState();
+    m_rotationCenter = commonCenter;
+    m_rotationStartPos = g_graphicsView->mapFromScene(commonCenter);
+
+    // Set global rotation state
+    g_rotationCenter = commonCenter;
+    g_rotationStartPos = m_rotationStartPos;
+    g_rotationMode = true;
+    m_rotationMode = true;
+
+    // Prevent normal node dragging during rotation
+    g_settings->nodeDragging = NO_DRAGGING;
+
+    // Change cursor to indicate rotation mode
+    g_graphicsView->setCursor(Qt::ClosedHandCursor);
+}
+
+void MainWindow::onRotationFinished()
+{
+    if (!m_rotationMode)
+        return;
+
+    m_rotationMode = false;
+
+    // Push the undo command with before and after state
+    QByteArray after = captureGraphState();
+    if (!m_rotationBeforeState.isEmpty() && !after.isEmpty()
+        && m_rotationBeforeState != after) {
+        pushGraphStateCommand(m_rotationBeforeState, after);
+    }
+
+    // Reset cursor
+    g_graphicsView->setCursor(Qt::ArrowCursor);
+}
+
+void MainWindow::setNodeCapStyle() {
+    if (!m_edgeCapStyleComboBox)
+        return;
+
+    Qt::PenCapStyle capStyle = static_cast<Qt::PenCapStyle>(
+            m_edgeCapStyleComboBox->currentData().toInt());
+
+    std::vector<DeBruijnNode *> selectedNodes = m_scene->getSelectedNodes();
+    if (selectedNodes.empty())
+        return;
+
+    QByteArray before = captureGraphState();
+
+    for (auto *node : selectedNodes) {
+        if (auto *graphicsItemNode = node->getGraphicsItemNode())
+            graphicsItemNode->setCapStyle(capStyle);
+        if (auto *graphicsItemNode = node->getReverseComplement()->getGraphicsItemNode())
+            graphicsItemNode->setCapStyle(capStyle);
     }
 
     pushGraphStateCommand(before, captureGraphState());

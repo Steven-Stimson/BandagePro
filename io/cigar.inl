@@ -77,13 +77,13 @@ namespace cigar::grammar {
             auto colon = dsl::lit_c<':'>;
             return dsl::p<tag_name> >> colon +
                    (
-                           dsl::capture(LEXY_LIT("A")) >> colon + dsl::p < tag_character > |
+                           dsl::capture(LEXY_LIT("A") / LEXY_LIT("a")) >> colon + dsl::p < tag_character > |
                            dsl::capture(LEXY_LIT("i")) >> colon + dsl::p < tag_integer > |
                            dsl::capture(LEXY_LIT("f")) >> colon + dsl::p < tag_float > |
-                           dsl::capture(LEXY_LIT("Z")) >> colon + dsl::p < tag_string > |
-                           dsl::capture(LEXY_LIT("J")) >> colon + dsl::p < tag_string > |
-                           dsl::capture(LEXY_LIT("H")) >> colon + dsl::p < tag_string > |
-                           dsl::capture(LEXY_LIT("B")) >> colon + dsl::p < tag_string > |
+                           dsl::capture(LEXY_LIT("Z") / LEXY_LIT("z")) >> colon + dsl::p < tag_string > |
+                           dsl::capture(LEXY_LIT("J") / LEXY_LIT("j")) >> colon + dsl::p < tag_string > |
+                           dsl::capture(LEXY_LIT("H") / LEXY_LIT("h")) >> colon + dsl::p < tag_string > |
+                           dsl::capture(LEXY_LIT("B") / LEXY_LIT("b")) >> colon + dsl::p < tag_string > |
                            dsl::error<invalid_tag_type>
                    );
         }();

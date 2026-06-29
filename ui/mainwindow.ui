@@ -1432,7 +1432,7 @@ then colour which other nodes in the graph are likely to be contiguous
            <item>
             <widget class="CollapseButton" name="blastDetailsButton">
              <property name="styleSheet">
-              <string notr="true">QToolButton {border: none; font: 13pt; font-weight: bold;}</string>
+              <string notr="true">QToolButton {border: none; font-weight: bold;}</string>
              </property>
              <property name="text">
               <string> Graph search</string>
@@ -1592,7 +1592,7 @@ then colour which other nodes in the graph are likely to be contiguous
            <item>
             <widget class="CollapseButton" name="bedButton">
              <property name="styleSheet">
-              <string notr="true">QToolButton {border: none; font: 13pt; font-weight: bold;}</string>
+              <string notr="true">QToolButton {border: none; font-weight: bold;}</string>
              </property>
              <property name="text">
               <string> BED</string>
@@ -1667,7 +1667,7 @@ then colour which other nodes in the graph are likely to be contiguous
            <item>
             <widget class="CollapseButton" name="annotationsButton">
              <property name="styleSheet">
-              <string notr="true">QToolButton {border: none; font: 13pt; font-weight: bold;}</string>
+              <string notr="true">QToolButton {border: none; font-weight: bold;}</string>
              </property>
              <property name="text">
               <string> Annotations</string>
@@ -2799,6 +2799,8 @@ then colour which other nodes in the graph are likely to be contiguous
     <addaction name="separator"/>
     <addaction name="actionChange_node_name"/>
     <addaction name="actionChange_node_depth"/>
+    <addaction name="separator"/>
+    <addaction name="actionRotate_nodes"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuManipulate"/>
@@ -2935,6 +2937,9 @@ then colour which other nodes in the graph are likely to be contiguous
    <property name="text">
     <string>Select all</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
   </action>
   <action name="actionInvert_selection">
    <property name="icon">
@@ -2943,6 +2948,9 @@ then colour which other nodes in the graph are likely to be contiguous
    </property>
    <property name="text">
     <string>Invert selection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
   <action name="actionCopy_selected_node_sequences_to_clipboard">
@@ -3164,6 +3172,14 @@ then colour which other nodes in the graph are likely to be contiguous
   <action name="actionChange_node_depth">
    <property name="text">
     <string>Change node depth</string>
+   </property>
+  </action>
+  <action name="actionRotate_nodes">
+   <property name="text">
+    <string>Rotate</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionSelect_nodes_with_dead_ends">

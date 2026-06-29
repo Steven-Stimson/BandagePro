@@ -131,3 +131,13 @@ void llvm::report_bad_alloc_error(const char *Reason, bool GenCrashDiag) {
 // errors are handled by throwing 'std::bad_alloc'.
 void llvm::install_out_of_memory_new_handler() {
 }
+
+void llvm::llvm_unreachable_internal(const char *msg, const char *file,
+                                     unsigned line) {
+  if (msg)
+    fprintf(stderr, "UNREACHABLE executed");
+  if (file)
+    fprintf(stderr, " at %s:%u", file, line);
+  fprintf(stderr, "!\n");
+  abort();
+}

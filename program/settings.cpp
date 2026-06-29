@@ -75,6 +75,8 @@ Settings::Settings()
     displayNodeCsvData = false;
     displayNodeCsvDataCol = 0;
     labelFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+    if (labelFont.pointSize() <= 0)
+        labelFont.setPointSize(5);
 #ifdef Q_OS_WIN
     // MS Sans Serif is a legacy bitmap/raster font that Qt6's DirectWrite
     // backend cannot render. If the system default happens to resolve to it

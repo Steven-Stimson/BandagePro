@@ -5,10 +5,12 @@
 #include <QByteArray>
 #include <functional>
 
+struct ViewState;
+
 class GraphStateCommand : public QUndoCommand
 {
 public:
-    using RestoreCallback = std::function<void()>;
+    using RestoreCallback = std::function<void(const ViewState &)>;
 
     GraphStateCommand(const QByteArray &before,
                       const QByteArray &after,
@@ -19,7 +21,7 @@ public:
     void redo() override;
 
 private:
-    void restoreState(const QByteArray &gfaData);
+    void restoreState(const QByteArray &viewStateData);
 
     QByteArray m_before;
     QByteArray m_after;

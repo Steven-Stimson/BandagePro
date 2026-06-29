@@ -18,6 +18,7 @@
 
 #include "globals.h"
 #include <QLocale>
+#include <QPointF>
 #include <cmath>
 
 QSharedPointer<Settings> g_settings;
@@ -28,6 +29,9 @@ QSharedPointer<search::BlastSearch> g_blastSearch;
 QSharedPointer<AssemblyGraph> g_assemblyGraph;
 std::shared_ptr<AnnotationsManager> g_annotationsManager;
 QUndoStack * g_undoStack = nullptr;
+bool g_rotationMode = false;
+QPointF g_rotationCenter;
+QPointF g_rotationStartPos;
 
 
 QString formatIntForDisplay(int num) {

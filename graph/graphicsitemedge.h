@@ -35,12 +35,15 @@ public:
     QPainterPath shape() const override;
 
     virtual void remakePath();
+    void setCapStyle(Qt::PenCapStyle style) { m_capStyle = style; update(); }
+    Qt::PenCapStyle capStyle() const { return m_capStyle; }
     DeBruijnEdge *edge() const { return m_deBruijnEdge; }
 
 private:
     DeBruijnEdge *m_deBruijnEdge;
     QColor m_edgeColor;
     Qt::PenStyle m_penStyle;
+    Qt::PenCapStyle m_capStyle = Qt::FlatCap;
     float m_width;
 };
 

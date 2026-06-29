@@ -48,7 +48,7 @@ GraphicsItemEdge::GraphicsItemEdge(DeBruijnEdge *deBruijnEdge,
 
 void GraphicsItemEdge::paint(QPainter * painter, const QStyleOptionGraphicsItem *, QWidget *) {
     QColor penColour = isSelected() ? g_settings->selectionColour : m_edgeColor;
-    QPen edgePen(QBrush(penColour), m_width, m_penStyle, Qt::RoundCap);
+    QPen edgePen(QBrush(penColour), m_width, m_penStyle, m_capStyle);
     painter->setPen(edgePen);
     painter->drawPath(path());
 }

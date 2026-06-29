@@ -46,6 +46,9 @@ extern QSharedPointer<search::BlastSearch> g_blastSearch;
 extern QSharedPointer<AssemblyGraph> g_assemblyGraph;
 extern std::shared_ptr<AnnotationsManager> g_annotationsManager;
 extern QUndoStack * g_undoStack;
+extern bool g_rotationMode;
+extern QPointF g_rotationCenter;
+extern QPointF g_rotationStartPos;
 
 
 //Functions for formatting numbers are used in many places, and are made global.

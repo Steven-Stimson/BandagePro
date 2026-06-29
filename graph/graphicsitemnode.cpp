@@ -55,7 +55,8 @@ GraphicsItemNode::GraphicsItemNode(DeBruijnNode * deBruijnNode,
     m_colour(toCopy->m_colour),
     m_width(toCopy->m_width),
     m_grabIndex(toCopy->m_grabIndex),
-    m_hasArrow(toCopy->m_hasArrow) {
+    m_hasArrow(toCopy->m_hasArrow),
+    m_rotating(false) {
     remakePath();
 }
 
@@ -68,7 +69,8 @@ GraphicsItemNode::GraphicsItemNode(DeBruijnNode *deBruijnNode,
         : QGraphicsItem(parent), m_deBruijnNode(deBruijnNode),
           m_width(0),
           m_grabIndex(0),
-          m_hasArrow(g_settings->doubleMode || g_settings->arrowheadsInSingleMode) {
+          m_hasArrow(g_settings->doubleMode || g_settings->arrowheadsInSingleMode),
+          m_rotating(false) {
     m_linePoints.assign(linePoints.begin(), linePoints.end());
     setWidth(depthRelativeToMeanDrawnDepth);
     remakePath();
@@ -81,7 +83,8 @@ GraphicsItemNode::GraphicsItemNode(DeBruijnNode *deBruijnNode,
         : QGraphicsItem(parent), m_deBruijnNode(deBruijnNode),
           m_width(0),
           m_grabIndex(0),
-          m_hasArrow(g_settings->doubleMode || g_settings->arrowheadsInSingleMode) {
+          m_hasArrow(g_settings->doubleMode || g_settings->arrowheadsInSingleMode),
+          m_rotating(false) {
     m_linePoints.assign(linePoints.begin(), linePoints.end());
     setWidth(depthRelativeToMeanDrawnDepth);
     remakePath();
@@ -324,7 +327,7 @@ QPainterPath GraphicsItemNode::shape() const
     //Create a path that outlines the main node shape.
     QPainterPathStroker stroker;
     stroker.setWidth(m_width);
-    stroker.setCapStyle(Qt::FlatCap);
+    stroker.setCapStyle(m_capStyle);
     stroker.setJoinStyle(Qt::RoundJoin);
     QPainterPath mainNodePath = stroker.createStroke(m_path);
 
@@ -379,8 +382,10 @@ QPainterPath GraphicsItemNode::shape() const
 
 void GraphicsItemNode::mousePressEvent(QGraphicsSceneMouseEvent * event)
 {
-    m_grabIndex = 0;
+    m_rotating = false;
     QPointF grabPoint = event->pos();
+
+    m_grabIndex = 0;
 
     double closestPointDistance = distance(grabPoint, m_linePoints[0]);
     for (size_t i = 1; i < m_linePoints.size(); ++i)
@@ -501,6 +506,21 @@ void GraphicsItemNode::shiftPoints(QPointF difference)
             m_linePoints[i] += difference * dragStrength;
         }
     }
+}
+
+void GraphicsItemNode::rotatePoints(QPointF center, double angleRadians)
+{
+    prepareGeometryChange();
+
+    double cosA = cos(angleRadians);
+    double sinA = sin(angleRadians);
+    for (auto &pt : m_linePoints) {
+        double dx = pt.x() - center.x();
+        double dy = pt.y() - center.y();
+        pt.setX(center.x() + dx * cosA - dy * sinA);
+        pt.setY(center.y() + dx * sinA + dy * cosA);
+    }
+    remakePath();
 }
 
 void GraphicsItemNode::remakePath()
@@ -925,7 +945,7 @@ QPainterPath GraphicsItemNode::buildPartialHighlightPath(double startFraction,
     else
         stroker.setWidth(m_width);
 
-    stroker.setCapStyle(Qt::FlatCap);
+    stroker.setCapStyle(m_capStyle);
     stroker.setJoinStyle(Qt::RoundJoin);
     QPainterPath highlightPath = stroker.createStroke(partialPath);
 

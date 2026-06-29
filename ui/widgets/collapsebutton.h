@@ -32,7 +32,6 @@ public:
     animation_->setStartValue(0);
     animation_->setEasingCurve(QEasingCurve::InOutQuad);
     animation_->setDuration(300);
-    animation_->setEndValue(content->sizeHint().height() + 10);
     animator_.addAnimation(animation_);
     if (!isChecked()) {
       content->setMaximumHeight(0);
@@ -40,11 +39,23 @@ public:
   }
 
   void hideContent() {
+    if (content_) {
+      int fullHeight = content_->sizeHint().height();
+      if (fullHeight <= 0) fullHeight = content_->minimumSizeHint().height();
+      if (fullHeight <= 0) fullHeight = 200;
+      static_cast<QPropertyAnimation *>(animator_.animationAt(0))->setEndValue(fullHeight + 10);
+    }
     animator_.setDirection(QAbstractAnimation::Backward);
     animator_.start();
   }
 
   void showContent() {
+    if (content_) {
+      int fullHeight = content_->sizeHint().height();
+      if (fullHeight <= 0) fullHeight = content_->minimumSizeHint().height();
+      if (fullHeight <= 0) fullHeight = 200;
+      static_cast<QPropertyAnimation *>(animator_.animationAt(0))->setEndValue(fullHeight + 10);
+    }
     animator_.setDirection(QAbstractAnimation::Forward);
     animator_.start();
   }
